@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Github, Shield, Heart } from "lucide-react";
+import { Github, Shield, TerminalSquare } from "lucide-react";
 
 export function Footer() {
   return (
@@ -8,14 +8,16 @@ export function Footer() {
         <div className="grid gap-10 md:grid-cols-4">
           <div className="md:col-span-2">
             <div className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded bg-gradient-hero shadow-glow-blue" />
+              <div className="flex h-8 w-8 items-center justify-center rounded bg-gradient-hero shadow-glow-blue">
+                <TerminalSquare className="h-4 w-4 text-background" strokeWidth={2.4} />
+              </div>
               <span className="font-display text-lg font-bold">
                 TechTools <span className="text-gradient">Hub</span>
               </span>
             </div>
             <p className="mt-3 max-w-md text-sm text-muted-foreground">
-              Une revue claire et professionnelle des meilleurs outils open source pour
-              la cybersécurité, l'OSINT, le réseau, le forensic et l'administration système.
+              Revue technologique d'outils <strong className="text-foreground">en ligne de commande</strong> open source pour la
+              cybersécurité, l'OSINT, le réseau, le forensic, l'administration système et l'automatisation.
             </p>
             <div className="mt-4 inline-flex items-center gap-2 rounded-md border border-border bg-secondary/40 px-3 py-1.5 text-xs text-muted-foreground">
               <Shield className="h-3.5 w-3.5 text-primary" />
@@ -49,9 +51,7 @@ export function Footer() {
 
         <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row">
           <p className="font-mono">© {new Date().getFullYear()} TechTools Hub · MIT-spirit</p>
-          <p className="inline-flex items-center gap-1">
-            Conçu avec <Heart className="h-3 w-3 text-accent" /> pour la communauté tech
-          </p>
+          <p className="font-mono">CLI only · open source · usage légal</p>
         </div>
       </div>
     </footer>

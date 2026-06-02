@@ -1,5 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, ExternalLink, ShieldAlert, Star, Copy, Check, Github, Lightbulb, AlertTriangle, BookOpen } from "lucide-react";
+import {
+  ArrowLeft, ExternalLink, ShieldAlert, Star, Copy, Check, Github,
+  Lightbulb, AlertTriangle, BookOpen, TerminalSquare, Download, MonitorSmartphone, Scale, Tag, GitFork,
+} from "lucide-react";
 import { useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
@@ -34,16 +37,16 @@ function ToolPage() {
   const cat = getCategory(tool.category);
   const { has, toggle } = useFavorites();
   const fav = has(tool.slug);
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState<string | null>(null);
 
   const related = tools
     .filter((t) => t.category === tool.category && t.slug !== tool.slug)
     .slice(0, 3);
 
-  const copy = () => {
-    navigator.clipboard.writeText(tool.github);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+  const copy = (text: string, key: string) => {
+    navigator.clipboard.writeText(text);
+    setCopied(key);
+    setTimeout(() => setCopied(null), 1500);
   };
 
   return (
@@ -64,7 +67,9 @@ function ToolPage() {
 
           <div className="mt-6 flex items-start justify-between gap-6">
             <div className="min-w-0">
-              <p className="font-mono text-xs uppercase tracking-widest text-primary">{cat.name}</p>
+              <p className="inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-widest text-primary">
+                <TerminalSquare className="h-3.5 w-3.5" /> CLI tool · {cat.name}
+              </p>
               <h1 className="mt-2 font-display text-4xl font-bold sm:text-5xl">
                 {tool.name}
               </h1>
@@ -73,26 +78,24 @@ function ToolPage() {
               <div className="mt-5 flex flex-wrap gap-2">
                 <Badge>{tool.level}</Badge>
                 <Badge>Open Source</Badge>
+                <span className="inline-flex items-center gap-1 rounded-md border border-border bg-secondary/50 px-2.5 py-1 text-xs font-mono uppercase text-muted-foreground">
+                  <MonitorSmartphone className="h-3 w-3" /> {tool.os.join(" · ")}
+                </span>
                 {tool.ethical && (
                   <span className="inline-flex items-center gap-1 rounded-md border border-destructive/30 bg-destructive/10 px-2.5 py-1 text-xs font-mono uppercase text-destructive">
-                    <ShieldAlert className="h-3 w-3" /> usage encadré
+                    <ShieldAlert className="h-3 w-3" /> usage légal uniquement
                   </span>
                 )}
-                {tool.tags.map((t) => (
-                  <span key={t} className="rounded bg-secondary/60 px-2 py-1 text-xs font-mono text-muted-foreground">
-                    #{t}
-                  </span>
-                ))}
               </div>
 
               <div className="mt-6 flex flex-wrap gap-2">
                 <a href={tool.github} target="_blank" rel="noreferrer"
                   className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-glow-blue transition hover:bg-primary/90">
-                  <Github className="h-4 w-4" /> Voir sur GitHub <ExternalLink className="h-3.5 w-3.5" />
+                  <Github className="h-4 w-4" /> Source officielle <ExternalLink className="h-3.5 w-3.5" />
                 </a>
-                <button onClick={copy}
+                <button onClick={() => copy(tool.command, "cmd-top")}
                   className="inline-flex items-center gap-2 rounded-md border border-border bg-secondary/40 px-4 py-2.5 text-sm font-semibold text-foreground transition hover:border-primary/50">
-                  {copied ? <><Check className="h-4 w-4 text-cyber-cyan" /> Lien copié</> : <><Copy className="h-4 w-4" /> Copier le lien</>}
+                  {copied === "cmd-top" ? <><Check className="h-4 w-4 text-cyber-cyan" /> Commande copiée</> : <><Copy className="h-4 w-4" /> Copier la commande</>}
                 </button>
                 <button onClick={() => toggle(tool.slug)}
                   className={`inline-flex items-center gap-2 rounded-md border px-4 py-2.5 text-sm font-semibold transition ${
@@ -102,9 +105,6 @@ function ToolPage() {
                   {fav ? "Favori" : "Ajouter aux favoris"}
                 </button>
               </div>
-            </div>
-            <div className="hidden h-24 w-24 shrink-0 items-center justify-center rounded-2xl bg-gradient-hero font-display text-4xl font-bold text-background shadow-glow-blue sm:flex">
-              {tool.name[0]}
             </div>
           </div>
         </div>
@@ -121,7 +121,18 @@ function ToolPage() {
               </p>
             </Block>
 
-            <Block icon={Lightbulb} title="Cas d'usage">
+            <Block icon={Download} title="Installation">
+              <CodeBlock label="install" code={tool.install} onCopy={() => copy(tool.install, "install")} copied={copied === "install"} />
+            </Block>
+
+            <Block icon={TerminalSquare} title="Commande de base">
+              <CodeBlock label="$ shell" code={tool.command} onCopy={() => copy(tool.command, "cmd")} copied={copied === "cmd"} />
+              <p className="mt-3 text-xs text-muted-foreground">
+                Exemple à exécuter sur vos propres systèmes, en laboratoire ou avec une autorisation écrite.
+              </p>
+            </Block>
+
+            <Block icon={Lightbulb} title="Cas d'usage légaux">
               <ul className="space-y-2">
                 {tool.useCases.map((u) => (
                   <li key={u} className="flex gap-3 text-sm">
@@ -153,14 +164,6 @@ function ToolPage() {
               </Block>
             </div>
 
-            <Block title="Exemple d'utilisation légitime">
-              <p className="text-sm text-muted-foreground">
-                {tool.ethical
-                  ? `Exemple : un analyste sécurité utilise ${tool.name} dans le cadre d'un audit autorisé pour valider la robustesse d'un service interne, avec un mandat écrit du client.`
-                  : `Exemple : un administrateur déploie ${tool.name} sur sa propre infrastructure pour superviser, automatiser ou diagnostiquer son environnement.`}
-              </p>
-            </Block>
-
             {tool.ethical && (
               <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-5">
                 <div className="flex items-start gap-3">
@@ -174,26 +177,39 @@ function ToolPage() {
             )}
           </article>
 
-          <aside className="space-y-6">
-            <div className="rounded-xl border border-border bg-gradient-card p-5">
-              <h4 className="font-display text-sm font-semibold">Niveau requis</h4>
-              <p className="mt-2 text-2xl font-display font-bold text-primary">{tool.level}</p>
-            </div>
-            <div className="rounded-xl border border-border bg-gradient-card p-5">
-              <h4 className="font-display text-sm font-semibold">Alternatives</h4>
-              <ul className="mt-3 space-y-1.5 text-sm text-muted-foreground">
+          <aside className="space-y-5">
+            <SideCard icon={Scale} title="Niveau requis">
+              <p className="font-display text-xl font-bold text-primary">{tool.level}</p>
+            </SideCard>
+            <SideCard icon={MonitorSmartphone} title="Systèmes compatibles">
+              <ul className="space-y-1 text-sm text-muted-foreground">
+                {tool.os.map((o) => (
+                  <li key={o} className="font-mono">→ {o}</li>
+                ))}
+              </ul>
+            </SideCard>
+            <SideCard icon={Tag} title="Tags">
+              <div className="flex flex-wrap gap-1.5">
+                {tool.tags.map((tg) => (
+                  <span key={tg} className="rounded bg-secondary/60 px-1.5 py-0.5 text-[11px] font-mono text-muted-foreground">
+                    #{tg}
+                  </span>
+                ))}
+              </div>
+            </SideCard>
+            <SideCard icon={GitFork} title="Alternatives">
+              <ul className="space-y-1 text-sm text-muted-foreground">
                 {tool.alternatives.map((a) => (
                   <li key={a} className="font-mono">→ {a}</li>
                 ))}
               </ul>
-            </div>
-            <div className="rounded-xl border border-border bg-gradient-card p-5">
-              <h4 className="font-display text-sm font-semibold">Lien officiel</h4>
+            </SideCard>
+            <SideCard icon={Github} title="Source officielle">
               <a href={tool.github} target="_blank" rel="noreferrer"
-                 className="mt-2 block break-all font-mono text-xs text-primary hover:underline">
+                 className="block break-all font-mono text-xs text-primary hover:underline">
                 {tool.github}
               </a>
-            </div>
+            </SideCard>
           </aside>
         </div>
 
@@ -229,5 +245,32 @@ function Block({ icon: Icon, title, children }: { icon?: React.ComponentType<{ c
       </h3>
       <div className="mt-3">{children}</div>
     </section>
+  );
+}
+
+function SideCard({ icon: Icon, title, children }: { icon: React.ComponentType<{ className?: string }>; title: string; children: React.ReactNode }) {
+  return (
+    <div className="rounded-xl border border-border bg-gradient-card p-5">
+      <h4 className="flex items-center gap-2 font-display text-sm font-semibold">
+        <Icon className="h-4 w-4 text-primary" /> {title}
+      </h4>
+      <div className="mt-3">{children}</div>
+    </div>
+  );
+}
+
+function CodeBlock({ label, code, onCopy, copied }: { label: string; code: string; onCopy: () => void; copied: boolean }) {
+  return (
+    <div className="overflow-hidden rounded-md border border-border bg-background/70">
+      <div className="flex items-center justify-between border-b border-border px-3 py-1.5 text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
+        <span>{label}</span>
+        <button onClick={onCopy} className="inline-flex items-center gap-1 text-muted-foreground hover:text-primary">
+          {copied ? <><Check className="h-3 w-3 text-cyber-cyan" /> copié</> : <><Copy className="h-3 w-3" /> copier</>}
+        </button>
+      </div>
+      <pre className="overflow-x-auto px-3 py-3 font-mono text-[12px] leading-relaxed text-cyber-cyan">
+        <span className="text-muted-foreground">$ </span>{code}
+      </pre>
+    </div>
   );
 }

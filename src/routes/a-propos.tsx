@@ -24,14 +24,16 @@ function AboutPage() {
           La <span className="text-gradient">mission</span>.
         </h1>
         <p className="mt-5 text-lg text-muted-foreground leading-relaxed">
-          TechTools Hub est une revue technologique indépendante qui recense les meilleurs
-          outils open source pour la cybersécurité, l'OSINT, le réseau, le forensic,
-          l'administration système et la veille technologique.
+          TechTools Hub est une revue technologique indépendante qui recense uniquement
+          des outils <strong className="text-foreground">en ligne de commande</strong> open source
+          pour la cybersécurité, l'OSINT, le réseau, le forensic, l'administration système
+          et l'automatisation.
         </p>
         <p className="mt-4 text-muted-foreground leading-relaxed">
-          L'objectif : offrir une sélection claire, sérieuse et utile, plutôt qu'une liste
-          interminable. Chaque outil est documenté avec son utilité concrète, ses cas
-          d'usage, ses limites et le niveau requis.
+          L'objectif : offrir une sélection claire, sérieuse et réellement utile à qui veut
+          apprendre les outils terminal. Chaque outil est documenté avec installation,
+          commande de base, systèmes compatibles, cas d'usage légaux, niveau requis,
+          alternatives et lien GitHub officiel.
         </p>
 
         <div className="mt-10 rounded-xl border border-destructive/30 bg-destructive/5 p-6">

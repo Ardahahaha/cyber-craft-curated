@@ -25,7 +25,7 @@ function CategoriesPage() {
             Toutes les <span className="text-gradient">catégories</span>
           </h1>
           <p className="mt-3 max-w-2xl text-muted-foreground">
-            {categories.length} domaines couverts, du pentest à la veille technologique.
+            {categories.length} domaines couverts — uniquement des outils en ligne de commande.
           </p>
         </div>
       </section>
