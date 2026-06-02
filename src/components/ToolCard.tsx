@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { ExternalLink, Star, Copy, Check, ShieldAlert, TerminalSquare } from "lucide-react";
+import { ExternalLink, Star, Copy, Check, ShieldAlert, TerminalSquare, ChevronDown, Download, Play } from "lucide-react";
 import { useState } from "react";
+
 import type { Tool } from "@/data/tools";
 import { getCategory } from "@/data/tools";
 import { useFavorites } from "@/hooks/use-favorites";
