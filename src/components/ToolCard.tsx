@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { ExternalLink, Star, Copy, Check, ShieldAlert, TerminalSquare } from "lucide-react";
+import { ExternalLink, Star, Copy, Check, ShieldAlert, TerminalSquare, ChevronDown, Download, Play } from "lucide-react";
 import { useState } from "react";
+
 import type { Tool } from "@/data/tools";
 import { getCategory } from "@/data/tools";
 import { useFavorites } from "@/hooks/use-favorites";
@@ -14,16 +15,18 @@ const levelStyles: Record<Tool["level"], string> = {
 export function ToolCard({ tool }: { tool: Tool }) {
   const cat = getCategory(tool.category);
   const { has, toggle } = useFavorites();
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState<string | null>(null);
+  const [expanded, setExpanded] = useState(false);
   const fav = has(tool.slug);
 
-  const copyCmd = (e: React.MouseEvent) => {
+  const copyText = (text: string, key: string) => (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    navigator.clipboard.writeText(tool.command);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    navigator.clipboard.writeText(text);
+    setCopied(key);
+    setTimeout(() => setCopied(null), 1500);
   };
+
 
   return (
     <article className="group relative overflow-hidden rounded-xl border border-border bg-gradient-card p-5 hover-lift shadow-card-cyber">
@@ -80,11 +83,12 @@ export function ToolCard({ tool }: { tool: Tool }) {
         <div className="flex items-center justify-between border-b border-border px-2.5 py-1 text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
           <span>commande de base</span>
           <button
-            onClick={copyCmd}
+            onClick={copyText(tool.command, "cmd")}
             aria-label="Copier la commande"
             className="inline-flex items-center gap-1 text-muted-foreground hover:text-primary"
           >
-            {copied ? <Check className="h-3 w-3 text-cyber-cyan" /> : <Copy className="h-3 w-3" />}
+            {copied === "cmd" ? <Check className="h-3 w-3 text-cyber-cyan" /> : <Copy className="h-3 w-3" />}
+
           </button>
         </div>
         <pre className="overflow-x-auto px-2.5 py-2 font-mono text-[11px] leading-snug text-cyber-cyan">
@@ -101,13 +105,18 @@ export function ToolCard({ tool }: { tool: Tool }) {
       </div>
 
       <div className="mt-5 flex items-center gap-2">
-        <Link
-          to="/outils/$slug"
-          params={{ slug: tool.slug }}
-          className="flex-1 rounded-md bg-primary px-3 py-2 text-center text-xs font-semibold text-primary-foreground transition hover:bg-primary/90 hover:shadow-glow-blue"
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setExpanded((v) => !v);
+          }}
+          aria-expanded={expanded}
+          className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-md bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground transition hover:bg-primary/90 hover:shadow-glow-blue"
         >
-          Détails
-        </Link>
+          {expanded ? "Réduire" : "Détails"}
+          <ChevronDown className={`h-3.5 w-3.5 transition-transform ${expanded ? "rotate-180" : ""}`} />
+        </button>
         <a
           href={tool.github}
           target="_blank"
@@ -118,6 +127,71 @@ export function ToolCard({ tool }: { tool: Tool }) {
           GitHub <ExternalLink className="h-3 w-3" />
         </a>
       </div>
+
+      {expanded && (
+        <div className="mt-4 space-y-4 border-t border-border pt-4 animate-in fade-in slide-in-from-top-2 duration-200">
+          <p className="text-sm leading-relaxed text-foreground/90">{tool.description}</p>
+
+          {tool.utility && (
+            <div>
+              <h4 className="mb-1.5 text-[11px] font-mono uppercase tracking-wider text-muted-foreground">Utilité</h4>
+              <p className="text-sm text-foreground/80">{tool.utility}</p>
+            </div>
+          )}
+
+          <div className="overflow-hidden rounded-md border border-border bg-background/70">
+            <div className="flex items-center justify-between border-b border-border px-2.5 py-1 text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5"><Download className="h-3 w-3" /> installation</span>
+              <button
+                onClick={copyText(tool.install, "install")}
+                aria-label="Copier l'installation"
+                className="inline-flex items-center gap-1 text-muted-foreground hover:text-primary"
+              >
+                {copied === "install" ? <Check className="h-3 w-3 text-cyber-cyan" /> : <Copy className="h-3 w-3" />}
+              </button>
+            </div>
+            <pre className="overflow-x-auto px-2.5 py-2 font-mono text-[11px] leading-snug text-cyber-emerald">
+              <span className="text-muted-foreground">$ </span>{tool.install}
+            </pre>
+          </div>
+
+          <div className="overflow-hidden rounded-md border border-border bg-background/70">
+            <div className="flex items-center justify-between border-b border-border px-2.5 py-1 text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5"><Play className="h-3 w-3" /> lancement</span>
+              <button
+                onClick={copyText(tool.command, "launch")}
+                aria-label="Copier la commande de lancement"
+                className="inline-flex items-center gap-1 text-muted-foreground hover:text-primary"
+              >
+                {copied === "launch" ? <Check className="h-3 w-3 text-cyber-cyan" /> : <Copy className="h-3 w-3" />}
+              </button>
+            </div>
+            <pre className="overflow-x-auto px-2.5 py-2 font-mono text-[11px] leading-snug text-cyber-cyan">
+              <span className="text-muted-foreground">$ </span>{tool.command}
+            </pre>
+          </div>
+
+          {tool.useCases?.length > 0 && (
+            <div>
+              <h4 className="mb-1.5 text-[11px] font-mono uppercase tracking-wider text-muted-foreground">Cas d'usage</h4>
+              <ul className="space-y-1 text-sm text-foreground/80">
+                {tool.useCases.slice(0, 4).map((u) => (
+                  <li key={u} className="flex gap-2"><span className="text-primary">▸</span>{u}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <Link
+            to="/outils/$slug"
+            params={{ slug: tool.slug }}
+            className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
+          >
+            Page complète & README →
+          </Link>
+        </div>
+      )}
     </article>
   );
 }
+
