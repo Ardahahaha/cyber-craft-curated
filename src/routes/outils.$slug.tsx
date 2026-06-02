@@ -1,14 +1,64 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import {
   ArrowLeft, ExternalLink, ShieldAlert, Star, Copy, Check, Github,
-  Lightbulb, AlertTriangle, BookOpen, TerminalSquare, Download, MonitorSmartphone, Scale, Tag, GitFork,
+  Lightbulb, AlertTriangle, BookOpen, TerminalSquare, Download, MonitorSmartphone, Scale, Tag, GitFork, FileText, Loader2,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { ToolCard } from "@/components/ToolCard";
 import { ETHICAL_NOTICE, getCategory, getTool, tools } from "@/data/tools";
 import { useFavorites } from "@/hooks/use-favorites";
+
+function parseGithub(url: string): { owner: string; repo: string } | null {
+  const m = url.match(/github\.com\/([^/]+)\/([^/#?]+)/i);
+  if (!m) return null;
+  return { owner: m[1], repo: m[2].replace(/\.git$/, "") };
+}
+
+function useReadme(githubUrl: string) {
+  const [state, setState] = useState<{ html: string | null; loading: boolean; error: string | null }>({
+    html: null, loading: true, error: null,
+  });
+
+  useEffect(() => {
+    const parsed = parseGithub(githubUrl);
+    if (!parsed) {
+      setState({ html: null, loading: false, error: "Lien GitHub invalide" });
+      return;
+    }
+    const cacheKey = `readme:${parsed.owner}/${parsed.repo}`;
+    try {
+      const cached = sessionStorage.getItem(cacheKey);
+      if (cached) {
+        setState({ html: cached, loading: false, error: null });
+        return;
+      }
+    } catch {}
+
+    let cancelled = false;
+    setState({ html: null, loading: true, error: null });
+    fetch(`https://api.github.com/repos/${parsed.owner}/${parsed.repo}/readme`, {
+      headers: { Accept: "application/vnd.github.html" },
+    })
+      .then(async (r) => {
+        if (!r.ok) throw new Error(`GitHub a répondu ${r.status}`);
+        return r.text();
+      })
+      .then((html) => {
+        if (cancelled) return;
+        try { sessionStorage.setItem(cacheKey, html); } catch {}
+        setState({ html, loading: false, error: null });
+      })
+      .catch((e) => {
+        if (cancelled) return;
+        setState({ html: null, loading: false, error: e.message ?? "Impossible de charger le README" });
+      });
+    return () => { cancelled = true; };
+  }, [githubUrl]);
+
+  return state;
+}
 
 export const Route = createFileRoute("/outils/$slug")({
   beforeLoad: ({ params }) => {
