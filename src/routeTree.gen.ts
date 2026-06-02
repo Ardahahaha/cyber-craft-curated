@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as OutilsRouteImport } from './routes/outils'
+import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CategoriesIndexRouteImport } from './routes/categories.index'
 import { Route as OutilsSlugRouteImport } from './routes/outils.$slug'
@@ -18,6 +19,11 @@ import { Route as CategoriesSlugRouteImport } from './routes/categories.$slug'
 const OutilsRoute = OutilsRouteImport.update({
   id: '/outils',
   path: '/outils',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AProposRoute = AProposRouteImport.update({
+  id: '/a-propos',
+  path: '/a-propos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -43,6 +49,7 @@ const CategoriesSlugRoute = CategoriesSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/a-propos': typeof AProposRoute
   '/outils': typeof OutilsRouteWithChildren
   '/categories/$slug': typeof CategoriesSlugRoute
   '/outils/$slug': typeof OutilsSlugRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/a-propos': typeof AProposRoute
   '/outils': typeof OutilsRouteWithChildren
   '/categories/$slug': typeof CategoriesSlugRoute
   '/outils/$slug': typeof OutilsSlugRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/a-propos': typeof AProposRoute
   '/outils': typeof OutilsRouteWithChildren
   '/categories/$slug': typeof CategoriesSlugRoute
   '/outils/$slug': typeof OutilsSlugRoute
@@ -67,15 +76,23 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/a-propos'
     | '/outils'
     | '/categories/$slug'
     | '/outils/$slug'
     | '/categories/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/outils' | '/categories/$slug' | '/outils/$slug' | '/categories'
+  to:
+    | '/'
+    | '/a-propos'
+    | '/outils'
+    | '/categories/$slug'
+    | '/outils/$slug'
+    | '/categories'
   id:
     | '__root__'
     | '/'
+    | '/a-propos'
     | '/outils'
     | '/categories/$slug'
     | '/outils/$slug'
@@ -84,6 +101,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AProposRoute: typeof AProposRoute
   OutilsRoute: typeof OutilsRouteWithChildren
   CategoriesSlugRoute: typeof CategoriesSlugRoute
   CategoriesIndexRoute: typeof CategoriesIndexRoute
@@ -96,6 +114,13 @@ declare module '@tanstack/react-router' {
       path: '/outils'
       fullPath: '/outils'
       preLoaderRoute: typeof OutilsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/a-propos': {
+      id: '/a-propos'
+      path: '/a-propos'
+      fullPath: '/a-propos'
+      preLoaderRoute: typeof AProposRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -142,6 +167,7 @@ const OutilsRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AProposRoute: AProposRoute,
   OutilsRoute: OutilsRouteWithChildren,
   CategoriesSlugRoute: CategoriesSlugRoute,
   CategoriesIndexRoute: CategoriesIndexRoute,
