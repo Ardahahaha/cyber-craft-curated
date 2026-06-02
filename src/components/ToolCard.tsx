@@ -118,11 +118,20 @@ export function ToolCard({ tool }: { tool: Tool }) {
             setExpanded((v) => !v);
           }}
           aria-expanded={expanded}
-          className="group/detail flex-1 inline-flex items-center justify-center gap-1.5 rounded-full bg-gradient-hero px-4 py-2.5 text-xs font-bold text-primary-foreground shadow-glow-blue transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_30px_-6px_oklch(0.68_0.27_255/0.8)] active:scale-[0.98] relative overflow-hidden"
+          className="group/detail relative flex-1 inline-flex items-center justify-center gap-2 overflow-hidden rounded-lg border border-primary/25 bg-primary/[0.06] px-4 py-2 text-xs font-medium tracking-wide text-foreground/90 backdrop-blur-sm transition-all duration-300 hover:border-primary/50 hover:text-primary hover:bg-primary/[0.09]"
         >
-          <span className="absolute inset-0 bg-white/0 transition-colors duration-300 group-hover/detail:bg-white/10" />
-          <span className="relative">{expanded ? "Réduire" : "Détails"}</span>
-          <ChevronDown className={`relative h-3.5 w-3.5 transition-transform duration-300 ${expanded ? "rotate-180" : ""}`} />
+          {/* Sheen sweep */}
+          <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-primary/15 to-transparent transition-transform duration-700 ease-out group-hover/detail:translate-x-full" />
+          {/* Top hairline */}
+          <span className="pointer-events-none absolute inset-x-3 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent opacity-60" />
+          <span className="relative font-mono uppercase text-[10.5px] tracking-[0.18em]">
+            {expanded ? "Réduire" : "Détails"}
+          </span>
+          <ChevronDown
+            className={`relative h-3.5 w-3.5 text-primary/70 transition-transform duration-300 group-hover/detail:text-primary ${
+              expanded ? "rotate-180" : ""
+            }`}
+          />
         </button>
         <a
           href={tool.github}
