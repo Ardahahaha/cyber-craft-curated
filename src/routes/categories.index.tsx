@@ -7,7 +7,7 @@ import { categories, toolsByCategory } from "@/data/tools";
 export const Route = createFileRoute("/categories/")({
   head: () => ({
     meta: [
-      { title: "Catégories — TechTools Hub" },
+      { title: "Catégories — IT-ools" },
       { name: "description", content: "Toutes les catégories d'outils open source : cybersécurité, OSINT, réseau, forensic et plus." },
     ],
   }),

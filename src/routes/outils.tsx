@@ -18,7 +18,7 @@ const searchSchema = z.object({
 export const Route = createFileRoute("/outils")({
   head: () => ({
     meta: [
-      { title: "Tous les outils — TechTools Hub" },
+      { title: "Tous les outils — IT-ools" },
       { name: "description", content: "Recherche et filtrage parmi tous les outils open source recensés." },
     ],
   }),

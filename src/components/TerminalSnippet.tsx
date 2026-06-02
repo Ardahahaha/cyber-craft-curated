@@ -5,7 +5,7 @@ const lines = [
   "  loading categories ......... [ok]",
   "  indexing CLI tools ......... [ok]",
   "  verifying github sources ... [ok]",
-  "  ready. welcome to TechTools Hub_",
+  "  ready. welcome to IT-ools_",
 ];
 
 export function TerminalSnippet() {

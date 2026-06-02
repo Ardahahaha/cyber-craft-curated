@@ -1,5 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Terminal, Search } from "lucide-react";
+import { Search } from "lucide-react";
+import { LogoMark } from "@/components/Logo";
 import { useState } from "react";
 
 const links = [
@@ -17,18 +18,16 @@ export function Navbar() {
     <header className="sticky top-0 z-50 glass-strong">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
         <Link to="/" className="group flex items-center gap-2.5">
-          <div className="relative">
-            <div className="absolute inset-0 rounded-md bg-primary/40 blur-md group-hover:bg-primary/60 transition" />
-            <div className="relative flex h-9 w-9 items-center justify-center rounded-md bg-gradient-hero shadow-glow-blue">
-              <Terminal className="h-5 w-5 text-background" strokeWidth={2.5} />
-            </div>
+          <div className="relative transition-transform group-hover:scale-105">
+            <div className="absolute inset-0 rounded-full bg-primary/30 blur-xl group-hover:bg-primary/50 transition" />
+            <LogoMark size={32} className="relative" />
           </div>
           <div className="flex flex-col leading-none">
             <span className="font-display text-base font-bold tracking-tight">
-              TechTools <span className="text-gradient">Hub</span>
+              IT<span className="text-gradient">-ools</span>
             </span>
             <span className="font-mono text-[10px] text-muted-foreground">
-              v1.0 · open source review
+              v1.0 · command-line review
             </span>
           </div>
         </Link>

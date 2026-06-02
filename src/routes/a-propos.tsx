@@ -7,8 +7,8 @@ import { ETHICAL_NOTICE } from "@/data/tools";
 export const Route = createFileRoute("/a-propos")({
   head: () => ({
     meta: [
-      { title: "À propos — TechTools Hub" },
-      { name: "description", content: "La mission de TechTools Hub : centraliser des outils open source fiables et utiles." },
+      { title: "À propos — IT-ools" },
+      { name: "description", content: "La mission de IT-ools : centraliser des outils open source fiables et utiles." },
     ],
   }),
   component: AboutPage,
@@ -24,7 +24,7 @@ function AboutPage() {
           La <span className="text-gradient">mission</span>.
         </h1>
         <p className="mt-5 text-lg text-muted-foreground leading-relaxed">
-          TechTools Hub est une revue technologique indépendante qui recense uniquement
+          IT-ools est une revue technologique indépendante qui recense uniquement
           des outils <strong className="text-foreground">en ligne de commande</strong> open source
           pour la cybersécurité, l'OSINT, le réseau, le forensic, l'administration système
           et l'automatisation.
