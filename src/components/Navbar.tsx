@@ -1,5 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Terminal, Search } from "lucide-react";
+import { Search } from "lucide-react";
+import { LogoMark } from "@/components/Logo";
 import { useState } from "react";
 
 const links = [
