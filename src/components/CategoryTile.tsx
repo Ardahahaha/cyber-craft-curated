@@ -5,9 +5,13 @@ import type { Category } from "@/data/tools";
 const iconMap = { ShieldCheck, Search, Network, Fingerprint, Server, Workflow, Rss };
 
 const accentMap = {
-  blue: "from-primary/20 to-primary/0 group-hover:shadow-glow-blue text-primary",
-  violet: "from-accent/20 to-accent/0 group-hover:shadow-glow-violet text-accent",
-  cyan: "from-cyber-cyan/20 to-cyber-cyan/0 group-hover:shadow-glow-cyan text-cyber-cyan",
+  blue: "from-primary/30 to-primary/0 group-hover:shadow-glow-blue text-primary",
+  violet: "from-accent/30 to-accent/0 group-hover:shadow-glow-violet text-accent",
+  cyan: "from-cyber-cyan/30 to-cyber-cyan/0 group-hover:shadow-glow-cyan text-cyber-cyan",
+  emerald: "from-cyber-emerald/30 to-cyber-emerald/0 group-hover:shadow-glow-emerald text-cyber-emerald",
+  amber: "from-cyber-amber/30 to-cyber-amber/0 group-hover:shadow-glow-cyan text-cyber-amber",
+  coral: "from-cyber-coral/30 to-cyber-coral/0 group-hover:shadow-glow-violet text-cyber-coral",
+  magenta: "from-cyber-magenta/30 to-cyber-magenta/0 group-hover:shadow-glow-violet text-cyber-magenta",
 } as const;
 
 export function CategoryTile({ category, count }: { category: Category; count: number }) {

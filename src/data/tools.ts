@@ -16,7 +16,7 @@ export interface Category {
   short: string;
   description: string;
   icon: string;
-  accent: "blue" | "violet" | "cyan";
+  accent: "blue" | "violet" | "cyan" | "emerald" | "amber" | "coral" | "magenta";
 }
 
 export interface Tool {
