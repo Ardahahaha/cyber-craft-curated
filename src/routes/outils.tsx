@@ -36,7 +36,7 @@ function ToolsPage() {
 
   const setParam = (k: "cat" | "lvl" | "q", v: string) => {
     navigate({
-      search: (prev) => ({
+      search: (prev: Record<string, string | undefined>) => ({
         ...prev,
         [k]: v === "all" || v === "" ? undefined : v,
       }),
