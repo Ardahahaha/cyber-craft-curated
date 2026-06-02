@@ -13,7 +13,7 @@ export const Route = createFileRoute("/categories/$slug")({
     const cat = categories.find((c) => c.slug === params.slug);
     return {
       meta: [
-        { title: `${cat?.name ?? "Catégorie"} — TechTools Hub` },
+        { title: `${cat?.name ?? "Catégorie"} — IT-ools` },
         { name: "description", content: cat?.description ?? "" },
       ],
     };

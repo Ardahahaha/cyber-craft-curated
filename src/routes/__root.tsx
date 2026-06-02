@@ -77,14 +77,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "TechTools Hub — La revue des meilleurs outils open source" },
+      { title: "IT-ools — La revue des meilleurs outils open source" },
       {
         name: "description",
         content:
           "Cybersécurité, OSINT, réseau, forensic, sysadmin et veille technologique : une sélection claire et professionnelle d'outils open source.",
       },
-      { name: "author", content: "TechTools Hub" },
-      { property: "og:title", content: "TechTools Hub — Revue d'outils open source" },
+      { name: "author", content: "IT-ools" },
+      { property: "og:title", content: "IT-ools — Revue d'outils open source" },
       {
         property: "og:description",
         content: "Une revue technologique premium des meilleurs outils open source GitHub.",

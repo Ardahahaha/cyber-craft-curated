@@ -14,7 +14,7 @@ import { categories, tools, toolsByCategory, type Tool } from "@/data/tools";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "TechTools Hub — La revue des outils CLI open source" },
+      { title: "IT-ools — La revue des outils CLI open source" },
       {
         name: "description",
         content:
@@ -223,7 +223,7 @@ function Home() {
           )}
 
           {/* NOTICE */}
-          <Panel className="lg:col-span-12" icon={Lock} title="Usage légal uniquement" subtitle="TechTools Hub recense des outils défensifs et d'audit autorisés">
+          <Panel className="lg:col-span-12" icon={Lock} title="Usage légal uniquement" subtitle="IT-ools recense des outils défensifs et d'audit autorisés">
             <p className="text-sm text-muted-foreground leading-relaxed">
               Les outils présentés — y compris ceux historiquement utilisés en sécurité offensive —
               sont documentés exclusivement pour l'apprentissage, l'audit autorisé, le laboratoire personnel,

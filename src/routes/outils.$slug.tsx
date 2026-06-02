@@ -18,7 +18,7 @@ export const Route = createFileRoute("/outils/$slug")({
     const tool = getTool(params.slug);
     return {
       meta: [
-        { title: `${tool?.name ?? "Outil"} — TechTools Hub` },
+        { title: `${tool?.name ?? "Outil"} — IT-ools` },
         { name: "description", content: tool?.short ?? "" },
       ],
     };
