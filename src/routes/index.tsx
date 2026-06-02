@@ -72,7 +72,7 @@ function Home() {
               </div>
 
               <h1 className="mt-5 font-display text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
-                TechTools <span className="text-gradient">Hub</span>
+                IT<span className="text-gradient">-ools</span>
                 <br />
                 <span className="text-muted-foreground/90 text-2xl sm:text-3xl lg:text-4xl font-semibold">
                   uniquement des outils en ligne de commande.
