@@ -326,3 +326,35 @@ function CodeBlock({ label, code, onCopy, copied }: { label: string; code: strin
     </div>
   );
 }
+
+function ReadmeBlock({ githubUrl }: { githubUrl: string }) {
+  const { html, loading, error } = useReadme(githubUrl);
+  return (
+    <Block icon={FileText} title="README GitHub">
+      <div className="overflow-hidden rounded-xl border border-border bg-background/60">
+        <div className="flex items-center justify-between border-b border-border px-4 py-2 text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
+          <span className="inline-flex items-center gap-1.5"><Github className="h-3 w-3" /> README.md</span>
+          <a href={githubUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 hover:text-primary">
+            ouvrir sur github <ExternalLink className="h-3 w-3" />
+          </a>
+        </div>
+        <div className="max-h-[640px] overflow-y-auto p-5 sm:p-6">
+          {loading && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Loader2 className="h-4 w-4 animate-spin text-primary" /> Chargement du README depuis GitHub…
+            </div>
+          )}
+          {error && !loading && (
+            <p className="text-sm text-muted-foreground">
+              README indisponible ({error}).{" "}
+              <a href={githubUrl} target="_blank" rel="noreferrer" className="text-primary hover:underline">Le consulter sur GitHub</a>.
+            </p>
+          )}
+          {html && !loading && (
+            <div className="readme-content" dangerouslySetInnerHTML={{ __html: html }} />
+          )}
+        </div>
+      </div>
+    </Block>
+  );
+}
