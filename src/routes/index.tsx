@@ -43,14 +43,6 @@ const quickCats: { label: string; slug: CategorySlug }[] = [
   { label: "Blue Team", slug: "blueteam" },
 ];
 
-// Stacks recommandées
-const stacks: { title: string; tone: string; slugs: string[] }[] = [
-  { title: "Débutant cybersécurité", tone: "text-primary", slugs: ["nmap", "nikto", "sqlmap", "gobuster", "subfinder"] },
-  { title: "OSINT", tone: "text-cyber-violet", slugs: ["theharvester", "subfinder", "amass", "sherlock", "holehe"] },
-  { title: "Admin système", tone: "text-cyber-amber", slugs: ["ssh", "tmux", "htop", "rsync", "journalctl"] },
-  { title: "Réseau", tone: "text-cyber-cyan", slugs: ["ping", "mtr", "tcpdump", "nmap", "dig"] },
-  { title: "Forensic / DFIR", tone: "text-cyber-magenta", slugs: ["volatility3", "sleuthkit", "exiftool", "yara", "plaso"] },
-];
 
 function dayIndex() {
   const start = new Date(2026, 0, 1).getTime();
@@ -255,35 +247,6 @@ function Home() {
         </div>
       </section>
 
-      {/* STACKS RECOMMANDÉES */}
-      <section className="mx-auto max-w-7xl px-4 pb-12 sm:px-6">
-        <SectionHeader title="Stacks recommandées" />
-        <p className="mt-2 text-sm text-muted-foreground">5 piles d'outils CLI pour démarrer vite, par profil.</p>
-        <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {stacks.map((s) => (
-            <div key={s.title} className="rounded-xl border border-border bg-secondary/20 p-5">
-              <p className={`font-mono text-[11px] uppercase tracking-wider ${s.tone}`}># stack</p>
-              <p className="mt-1 font-display text-base font-bold">{s.title}</p>
-              <ul className="mt-4 space-y-2">
-                {s.slugs.map((slug) => {
-                  const t = tools.find((x) => x.slug === slug);
-                  if (!t) return null;
-                  return (
-                    <li key={slug}>
-                      <Link to="/outils/$slug" params={{ slug: t.slug }}
-                        className="group flex items-center gap-2 rounded-md border border-transparent px-1.5 py-1 hover:border-border hover:bg-background/40">
-                        <ToolLogo tool={t} size={24} />
-                        <span className="font-display text-sm font-medium">{t.name}</span>
-                        <ArrowRight className="ml-auto h-3 w-3 text-muted-foreground group-hover:text-primary" />
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </section>
 
       {/* DERNIERS AJOUTS + TOP DÉBUTANTS + TOP AVANCÉS */}
       <section className="mx-auto max-w-7xl px-4 pb-12 sm:px-6">
