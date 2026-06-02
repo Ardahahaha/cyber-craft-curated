@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { Github, Shield, TerminalSquare } from "lucide-react";
+import { Github, Shield } from "lucide-react";
+import { LogoMark } from "@/components/Logo";
 
 export function Footer() {
   return (
@@ -7,12 +8,10 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
         <div className="grid gap-10 md:grid-cols-4">
           <div className="md:col-span-2">
-            <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded bg-gradient-hero shadow-glow-blue">
-                <TerminalSquare className="h-4 w-4 text-background" strokeWidth={2.4} />
-              </div>
+            <div className="flex items-center gap-2.5">
+              <LogoMark size={28} />
               <span className="font-display text-lg font-bold">
-                TechTools <span className="text-gradient">Hub</span>
+                IT<span className="text-gradient">-ools</span>
               </span>
             </div>
             <p className="mt-3 max-w-md text-sm text-muted-foreground">
