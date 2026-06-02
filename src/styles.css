@@ -223,3 +223,67 @@ html { color-scheme: dark; }
   }
   .animate-blink { animation: blink 1s steps(1) infinite; }
 }
+
+/* GitHub README rendering */
+.readme-content {
+  color: var(--color-foreground);
+  font-size: 14px;
+  line-height: 1.65;
+  word-wrap: break-word;
+}
+.readme-content h1,
+.readme-content h2,
+.readme-content h3,
+.readme-content h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  margin: 1.5em 0 0.6em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--color-border);
+  letter-spacing: -0.01em;
+}
+.readme-content h1 { font-size: 1.7rem; }
+.readme-content h2 { font-size: 1.35rem; }
+.readme-content h3 { font-size: 1.1rem; border-bottom: none; }
+.readme-content h4 { font-size: 1rem; border-bottom: none; }
+.readme-content p { margin: 0.8em 0; color: oklch(0.85 0.02 250); }
+.readme-content a { color: var(--cyber-cyan); text-decoration: underline; text-underline-offset: 2px; }
+.readme-content a:hover { color: var(--primary); }
+.readme-content ul, .readme-content ol { margin: 0.8em 0; padding-left: 1.5em; }
+.readme-content li { margin: 0.25em 0; }
+.readme-content code {
+  font-family: var(--font-mono);
+  background: oklch(0.22 0.04 265 / 0.7);
+  color: var(--cyber-cyan);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-size: 0.88em;
+}
+.readme-content pre {
+  background: oklch(0.10 0.025 265 / 0.9);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 1em;
+  overflow-x: auto;
+  margin: 1em 0;
+}
+.readme-content pre code {
+  background: transparent;
+  color: oklch(0.92 0.02 250);
+  padding: 0;
+  font-size: 0.85em;
+}
+.readme-content blockquote {
+  border-left: 3px solid var(--primary);
+  padding: 0.4em 1em;
+  margin: 1em 0;
+  background: oklch(0.18 0.03 265 / 0.5);
+  color: var(--muted-foreground);
+  border-radius: 0 6px 6px 0;
+}
+.readme-content img { max-width: 100%; height: auto; border-radius: 6px; margin: 0.5em 0; }
+.readme-content table { border-collapse: collapse; margin: 1em 0; width: 100%; font-size: 0.9em; }
+.readme-content th, .readme-content td { border: 1px solid var(--color-border); padding: 0.5em 0.8em; text-align: left; }
+.readme-content th { background: oklch(0.20 0.03 265 / 0.6); font-weight: 600; }
+.readme-content hr { border: none; border-top: 1px solid var(--color-border); margin: 1.5em 0; }
+.readme-content strong { color: var(--foreground); font-weight: 600; }
