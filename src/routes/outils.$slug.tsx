@@ -141,7 +141,7 @@ function ToolPage() {
               <div className="mt-6 flex flex-wrap gap-2">
                 <a href={tool.github} target="_blank" rel="noreferrer"
                   className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-glow-blue transition hover:bg-primary/90">
-                  <Github className="h-4 w-4" /> Source officielle <ExternalLink className="h-3.5 w-3.5" />
+                  <Github className="h-4 w-4" /> Voir sur GitHub <ExternalLink className="h-3.5 w-3.5" />
                 </a>
                 <button onClick={() => copy(tool.command, "cmd-top")}
                   className="inline-flex items-center gap-2 rounded-md border border-border bg-secondary/40 px-4 py-2.5 text-sm font-semibold text-foreground transition hover:border-primary/50">
@@ -170,6 +170,8 @@ function ToolPage() {
                 <span className="text-muted-foreground">{tool.utility}</span>
               </p>
             </Block>
+
+            <ReadmeBlock githubUrl={tool.github} />
 
             <Block icon={Download} title="Installation">
               <CodeBlock label="install" code={tool.install} onCopy={() => copy(tool.install, "install")} copied={copied === "install"} />
@@ -254,7 +256,7 @@ function ToolPage() {
                 ))}
               </ul>
             </SideCard>
-            <SideCard icon={Github} title="Source officielle">
+            <SideCard icon={Github} title="GitHub">
               <a href={tool.github} target="_blank" rel="noreferrer"
                  className="block break-all font-mono text-xs text-primary hover:underline">
                 {tool.github}
