@@ -1,14 +1,64 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import {
   ArrowLeft, ExternalLink, ShieldAlert, Star, Copy, Check, Github,
-  Lightbulb, AlertTriangle, BookOpen, TerminalSquare, Download, MonitorSmartphone, Scale, Tag, GitFork,
+  Lightbulb, AlertTriangle, BookOpen, TerminalSquare, Download, MonitorSmartphone, Scale, Tag, GitFork, FileText, Loader2,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { ToolCard } from "@/components/ToolCard";
 import { ETHICAL_NOTICE, getCategory, getTool, tools } from "@/data/tools";
 import { useFavorites } from "@/hooks/use-favorites";
+
+function parseGithub(url: string): { owner: string; repo: string } | null {
+  const m = url.match(/github\.com\/([^/]+)\/([^/#?]+)/i);
+  if (!m) return null;
+  return { owner: m[1], repo: m[2].replace(/\.git$/, "") };
+}
+
+function useReadme(githubUrl: string) {
+  const [state, setState] = useState<{ html: string | null; loading: boolean; error: string | null }>({
+    html: null, loading: true, error: null,
+  });
+
+  useEffect(() => {
+    const parsed = parseGithub(githubUrl);
+    if (!parsed) {
+      setState({ html: null, loading: false, error: "Lien GitHub invalide" });
+      return;
+    }
+    const cacheKey = `readme:${parsed.owner}/${parsed.repo}`;
+    try {
+      const cached = sessionStorage.getItem(cacheKey);
+      if (cached) {
+        setState({ html: cached, loading: false, error: null });
+        return;
+      }
+    } catch {}
+
+    let cancelled = false;
+    setState({ html: null, loading: true, error: null });
+    fetch(`https://api.github.com/repos/${parsed.owner}/${parsed.repo}/readme`, {
+      headers: { Accept: "application/vnd.github.html" },
+    })
+      .then(async (r) => {
+        if (!r.ok) throw new Error(`GitHub a répondu ${r.status}`);
+        return r.text();
+      })
+      .then((html) => {
+        if (cancelled) return;
+        try { sessionStorage.setItem(cacheKey, html); } catch {}
+        setState({ html, loading: false, error: null });
+      })
+      .catch((e) => {
+        if (cancelled) return;
+        setState({ html: null, loading: false, error: e.message ?? "Impossible de charger le README" });
+      });
+    return () => { cancelled = true; };
+  }, [githubUrl]);
+
+  return state;
+}
 
 export const Route = createFileRoute("/outils/$slug")({
   beforeLoad: ({ params }) => {
@@ -91,7 +141,7 @@ function ToolPage() {
               <div className="mt-6 flex flex-wrap gap-2">
                 <a href={tool.github} target="_blank" rel="noreferrer"
                   className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-glow-blue transition hover:bg-primary/90">
-                  <Github className="h-4 w-4" /> Source officielle <ExternalLink className="h-3.5 w-3.5" />
+                  <Github className="h-4 w-4" /> Voir sur GitHub <ExternalLink className="h-3.5 w-3.5" />
                 </a>
                 <button onClick={() => copy(tool.command, "cmd-top")}
                   className="inline-flex items-center gap-2 rounded-md border border-border bg-secondary/40 px-4 py-2.5 text-sm font-semibold text-foreground transition hover:border-primary/50">
@@ -120,6 +170,8 @@ function ToolPage() {
                 <span className="text-muted-foreground">{tool.utility}</span>
               </p>
             </Block>
+
+            <ReadmeBlock githubUrl={tool.github} />
 
             <Block icon={Download} title="Installation">
               <CodeBlock label="install" code={tool.install} onCopy={() => copy(tool.install, "install")} copied={copied === "install"} />
@@ -204,7 +256,7 @@ function ToolPage() {
                 ))}
               </ul>
             </SideCard>
-            <SideCard icon={Github} title="Source officielle">
+            <SideCard icon={Github} title="GitHub">
               <a href={tool.github} target="_blank" rel="noreferrer"
                  className="block break-all font-mono text-xs text-primary hover:underline">
                 {tool.github}
@@ -272,5 +324,37 @@ function CodeBlock({ label, code, onCopy, copied }: { label: string; code: strin
         <span className="text-muted-foreground">$ </span>{code}
       </pre>
     </div>
+  );
+}
+
+function ReadmeBlock({ githubUrl }: { githubUrl: string }) {
+  const { html, loading, error } = useReadme(githubUrl);
+  return (
+    <Block icon={FileText} title="README GitHub">
+      <div className="overflow-hidden rounded-xl border border-border bg-background/60">
+        <div className="flex items-center justify-between border-b border-border px-4 py-2 text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
+          <span className="inline-flex items-center gap-1.5"><Github className="h-3 w-3" /> README.md</span>
+          <a href={githubUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 hover:text-primary">
+            ouvrir sur github <ExternalLink className="h-3 w-3" />
+          </a>
+        </div>
+        <div className="max-h-[640px] overflow-y-auto p-5 sm:p-6">
+          {loading && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Loader2 className="h-4 w-4 animate-spin text-primary" /> Chargement du README depuis GitHub…
+            </div>
+          )}
+          {error && !loading && (
+            <p className="text-sm text-muted-foreground">
+              README indisponible ({error}).{" "}
+              <a href={githubUrl} target="_blank" rel="noreferrer" className="text-primary hover:underline">Le consulter sur GitHub</a>.
+            </p>
+          )}
+          {html && !loading && (
+            <div className="readme-content" dangerouslySetInnerHTML={{ __html: html }} />
+          )}
+        </div>
+      </div>
+    </Block>
   );
 }
