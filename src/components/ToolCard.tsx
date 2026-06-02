@@ -115,7 +115,7 @@ export function ToolCard({ tool }: { tool: Tool }) {
           onClick={(e) => e.stopPropagation()}
           className="inline-flex items-center gap-1 rounded-md border border-border bg-secondary/40 px-3 py-2 text-xs font-semibold text-foreground transition hover:border-primary/50 hover:text-primary"
         >
-          Source <ExternalLink className="h-3 w-3" />
+          GitHub <ExternalLink className="h-3 w-3" />
         </a>
       </div>
     </article>
