@@ -43,14 +43,6 @@ const quickCats: { label: string; slug: CategorySlug }[] = [
   { label: "Blue Team", slug: "blueteam" },
 ];
 
-// Stacks recommandées
-const stacks: { title: string; tone: string; slugs: string[] }[] = [
-  { title: "Débutant cybersécurité", tone: "text-primary", slugs: ["nmap", "nikto", "sqlmap", "gobuster", "subfinder"] },
-  { title: "OSINT", tone: "text-cyber-violet", slugs: ["theharvester", "subfinder", "amass", "sherlock", "holehe"] },
-  { title: "Admin système", tone: "text-cyber-amber", slugs: ["ssh", "tmux", "htop", "rsync", "journalctl"] },
-  { title: "Réseau", tone: "text-cyber-cyan", slugs: ["ping", "mtr", "tcpdump", "nmap", "dig"] },
-  { title: "Forensic / DFIR", tone: "text-cyber-magenta", slugs: ["volatility3", "sleuthkit", "exiftool", "yara", "plaso"] },
-];
 
 function dayIndex() {
   const start = new Date(2026, 0, 1).getTime();
