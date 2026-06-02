@@ -33,15 +33,19 @@ export function ToolCard({ tool }: { tool: Tool }) {
       <div className="pointer-events-none absolute -top-20 -right-20 h-40 w-40 rounded-full bg-primary/10 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
       <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <div className="flex items-center gap-2 text-[11px] font-mono uppercase tracking-wider text-muted-foreground">
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary animate-pulse-glow" />
-            {cat.name}
+        <div className="flex min-w-0 items-start gap-3">
+          <ToolLogo tool={tool} />
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 text-[11px] font-mono uppercase tracking-wider text-muted-foreground">
+              <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary animate-pulse-glow" />
+              {cat.name}
+            </div>
+            <h3 className="mt-1.5 font-display text-lg font-bold leading-tight">
+              {tool.name}
+            </h3>
           </div>
-          <h3 className="mt-1.5 font-display text-lg font-bold leading-tight">
-            {tool.name}
-          </h3>
         </div>
+
         <button
           onClick={(e) => {
             e.preventDefault();
