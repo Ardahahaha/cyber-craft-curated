@@ -15,16 +15,18 @@ const levelStyles: Record<Tool["level"], string> = {
 export function ToolCard({ tool }: { tool: Tool }) {
   const cat = getCategory(tool.category);
   const { has, toggle } = useFavorites();
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState<string | null>(null);
+  const [expanded, setExpanded] = useState(false);
   const fav = has(tool.slug);
 
-  const copyCmd = (e: React.MouseEvent) => {
+  const copyText = (text: string, key: string) => (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    navigator.clipboard.writeText(tool.command);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    navigator.clipboard.writeText(text);
+    setCopied(key);
+    setTimeout(() => setCopied(null), 1500);
   };
+
 
   return (
     <article className="group relative overflow-hidden rounded-xl border border-border bg-gradient-card p-5 hover-lift shadow-card-cyber">
