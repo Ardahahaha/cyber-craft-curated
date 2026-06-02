@@ -5,6 +5,8 @@ import { useState } from "react";
 import type { Tool } from "@/data/tools";
 import { getCategory } from "@/data/tools";
 import { useFavorites } from "@/hooks/use-favorites";
+import { ToolLogo } from "@/components/ToolLogo";
+
 
 const levelStyles: Record<Tool["level"], string> = {
   Débutant: "bg-cyber-cyan/15 text-cyber-cyan border-cyber-cyan/30",
