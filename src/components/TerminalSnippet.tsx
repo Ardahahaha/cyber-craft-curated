@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 
 const lines = [
-  "$ techtools --scan --open-source",
-  "→ loading categories ...... [OK]",
-  "→ indexing 60+ tools ........ [OK]",
-  "→ verifying github sources .. [OK]",
-  "✓ ready. welcome to TechTools Hub_",
+  "$ techtools --scan --cli-only",
+  "  loading categories ......... [ok]",
+  "  indexing CLI tools ......... [ok]",
+  "  verifying github sources ... [ok]",
+  "  ready. welcome to TechTools Hub_",
 ];
 
 export function TerminalSnippet() {
@@ -30,7 +30,7 @@ export function TerminalSnippet() {
         j = 0;
         acc.push("");
       }
-    }, 28);
+    }, 24);
     return () => clearInterval(id);
   }, []);
 

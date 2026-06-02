@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ExternalLink, Star, Copy, Check, ShieldAlert } from "lucide-react";
+import { ExternalLink, Star, Copy, Check, ShieldAlert, TerminalSquare } from "lucide-react";
 import { useState } from "react";
 import type { Tool } from "@/data/tools";
 import { getCategory } from "@/data/tools";
@@ -17,10 +17,10 @@ export function ToolCard({ tool }: { tool: Tool }) {
   const [copied, setCopied] = useState(false);
   const fav = has(tool.slug);
 
-  const copy = (e: React.MouseEvent) => {
+  const copyCmd = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    navigator.clipboard.writeText(tool.github);
+    navigator.clipboard.writeText(tool.command);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
@@ -59,17 +59,37 @@ export function ToolCard({ tool }: { tool: Tool }) {
       <p className="mt-3 text-sm text-muted-foreground line-clamp-2">{tool.short}</p>
 
       <div className="mt-4 flex flex-wrap items-center gap-1.5">
+        <span className="inline-flex items-center gap-1 rounded-md border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] font-mono uppercase text-primary">
+          <TerminalSquare className="h-2.5 w-2.5" /> CLI tool
+        </span>
         <span className={`rounded-md border px-2 py-0.5 text-[10px] font-mono uppercase ${levelStyles[tool.level]}`}>
           {tool.level}
         </span>
         <span className="rounded-md border border-border bg-secondary/40 px-2 py-0.5 text-[10px] font-mono uppercase text-muted-foreground">
-          Open Source
+          {tool.os.join(" · ")}
         </span>
         {tool.ethical && (
           <span className="inline-flex items-center gap-1 rounded-md border border-destructive/30 bg-destructive/10 px-2 py-0.5 text-[10px] font-mono uppercase text-destructive">
-            <ShieldAlert className="h-2.5 w-2.5" /> usage encadré
+            <ShieldAlert className="h-2.5 w-2.5" /> usage légal
           </span>
         )}
+      </div>
+
+      {/* Command preview */}
+      <div className="mt-4 overflow-hidden rounded-md border border-border bg-background/70">
+        <div className="flex items-center justify-between border-b border-border px-2.5 py-1 text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
+          <span>commande de base</span>
+          <button
+            onClick={copyCmd}
+            aria-label="Copier la commande"
+            className="inline-flex items-center gap-1 text-muted-foreground hover:text-primary"
+          >
+            {copied ? <Check className="h-3 w-3 text-cyber-cyan" /> : <Copy className="h-3 w-3" />}
+          </button>
+        </div>
+        <pre className="overflow-x-auto px-2.5 py-2 font-mono text-[11px] leading-snug text-cyber-cyan">
+          <span className="text-muted-foreground">$ </span>{tool.command}
+        </pre>
       </div>
 
       <div className="mt-3 flex flex-wrap gap-1">
@@ -95,15 +115,8 @@ export function ToolCard({ tool }: { tool: Tool }) {
           onClick={(e) => e.stopPropagation()}
           className="inline-flex items-center gap-1 rounded-md border border-border bg-secondary/40 px-3 py-2 text-xs font-semibold text-foreground transition hover:border-primary/50 hover:text-primary"
         >
-          GitHub <ExternalLink className="h-3 w-3" />
+          Source <ExternalLink className="h-3 w-3" />
         </a>
-        <button
-          onClick={copy}
-          aria-label="Copier le lien"
-          className="rounded-md border border-border bg-secondary/40 p-2 text-muted-foreground transition hover:border-primary/50 hover:text-primary"
-        >
-          {copied ? <Check className="h-3.5 w-3.5 text-cyber-cyan" /> : <Copy className="h-3.5 w-3.5" />}
-        </button>
       </div>
     </article>
   );
