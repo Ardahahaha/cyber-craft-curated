@@ -83,11 +83,12 @@ export function ToolCard({ tool }: { tool: Tool }) {
         <div className="flex items-center justify-between border-b border-border px-2.5 py-1 text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
           <span>commande de base</span>
           <button
-            onClick={copyCmd}
+            onClick={copyText(tool.command, "cmd")}
             aria-label="Copier la commande"
             className="inline-flex items-center gap-1 text-muted-foreground hover:text-primary"
           >
-            {copied ? <Check className="h-3 w-3 text-cyber-cyan" /> : <Copy className="h-3 w-3" />}
+            {copied === "cmd" ? <Check className="h-3 w-3 text-cyber-cyan" /> : <Copy className="h-3 w-3" />}
+
           </button>
         </div>
         <pre className="overflow-x-auto px-2.5 py-2 font-mono text-[11px] leading-snug text-cyber-cyan">
