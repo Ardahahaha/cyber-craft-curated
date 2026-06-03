@@ -125,13 +125,13 @@ export const reviewTool = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     await assertAdmin(context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const patch: Record<string, unknown> = {
+    const patch = {
       status: data.action === "approve" ? "approved" : "rejected",
       reviewed_at: new Date().toISOString(),
       reviewed_by: context.userId,
-    };
-    if (data.action === "reject" && data.reason) patch.reject_reason = data.reason;
-    if (data.patch) Object.assign(patch, data.patch);
+      ...(data.action === "reject" && data.reason ? { reject_reason: data.reason } : {}),
+      ...(data.patch ?? {}),
+    } as never;
     const { error } = await supabaseAdmin.from("discovered_tools").update(patch).eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
