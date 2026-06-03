@@ -15,6 +15,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as CategoriesIndexRouteImport } from './routes/categories.index'
 import { Route as OutilsSlugRouteImport } from './routes/outils.$slug'
 import { Route as CategoriesSlugRouteImport } from './routes/categories.$slug'
+import { Route as ApiPublicCronDiscoveryRouteImport } from './routes/api.public.cron.discovery'
 
 const OutilsRoute = OutilsRouteImport.update({
   id: '/outils',
@@ -46,6 +47,11 @@ const CategoriesSlugRoute = CategoriesSlugRouteImport.update({
   path: '/categories/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicCronDiscoveryRoute = ApiPublicCronDiscoveryRouteImport.update({
+  id: '/api/public/cron/discovery',
+  path: '/api/public/cron/discovery',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -54,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/categories/$slug': typeof CategoriesSlugRoute
   '/outils/$slug': typeof OutilsSlugRoute
   '/categories/': typeof CategoriesIndexRoute
+  '/api/public/cron/discovery': typeof ApiPublicCronDiscoveryRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +69,7 @@ export interface FileRoutesByTo {
   '/categories/$slug': typeof CategoriesSlugRoute
   '/outils/$slug': typeof OutilsSlugRoute
   '/categories': typeof CategoriesIndexRoute
+  '/api/public/cron/discovery': typeof ApiPublicCronDiscoveryRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,6 +79,7 @@ export interface FileRoutesById {
   '/categories/$slug': typeof CategoriesSlugRoute
   '/outils/$slug': typeof OutilsSlugRoute
   '/categories/': typeof CategoriesIndexRoute
+  '/api/public/cron/discovery': typeof ApiPublicCronDiscoveryRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -81,6 +90,7 @@ export interface FileRouteTypes {
     | '/categories/$slug'
     | '/outils/$slug'
     | '/categories/'
+    | '/api/public/cron/discovery'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -89,6 +99,7 @@ export interface FileRouteTypes {
     | '/categories/$slug'
     | '/outils/$slug'
     | '/categories'
+    | '/api/public/cron/discovery'
   id:
     | '__root__'
     | '/'
@@ -97,6 +108,7 @@ export interface FileRouteTypes {
     | '/categories/$slug'
     | '/outils/$slug'
     | '/categories/'
+    | '/api/public/cron/discovery'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -105,6 +117,7 @@ export interface RootRouteChildren {
   OutilsRoute: typeof OutilsRouteWithChildren
   CategoriesSlugRoute: typeof CategoriesSlugRoute
   CategoriesIndexRoute: typeof CategoriesIndexRoute
+  ApiPublicCronDiscoveryRoute: typeof ApiPublicCronDiscoveryRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -151,6 +164,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CategoriesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/cron/discovery': {
+      id: '/api/public/cron/discovery'
+      path: '/api/public/cron/discovery'
+      fullPath: '/api/public/cron/discovery'
+      preLoaderRoute: typeof ApiPublicCronDiscoveryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -171,7 +191,18 @@ const rootRouteChildren: RootRouteChildren = {
   OutilsRoute: OutilsRouteWithChildren,
   CategoriesSlugRoute: CategoriesSlugRoute,
   CategoriesIndexRoute: CategoriesIndexRoute,
+  ApiPublicCronDiscoveryRoute: ApiPublicCronDiscoveryRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
