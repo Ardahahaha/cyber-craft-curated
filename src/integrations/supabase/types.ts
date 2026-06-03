@@ -14,16 +14,194 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      daily_tool: {
+        Row: {
+          created_at: string
+          featured_date: string
+          id: string
+          reason: string | null
+          tool_id: string
+        }
+        Insert: {
+          created_at?: string
+          featured_date: string
+          id?: string
+          reason?: string | null
+          tool_id: string
+        }
+        Update: {
+          created_at?: string
+          featured_date?: string
+          id?: string
+          reason?: string | null
+          tool_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "daily_tool_tool_id_fkey"
+            columns: ["tool_id"]
+            isOneToOne: false
+            referencedRelation: "discovered_tools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      discovered_tools: {
+        Row: {
+          description: string | null
+          detected_at: string
+          ethical: boolean
+          example_cmd: string | null
+          forks: number
+          full_name: string
+          github_url: string
+          homepage: string | null
+          id: string
+          install_cmd: string | null
+          language: string | null
+          last_commit: string | null
+          level: string | null
+          license: string | null
+          name: string
+          readme_excerpt: string | null
+          reject_reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          score: number
+          source: string
+          source_query: string | null
+          stars: number
+          status: string
+          suggested_category: string | null
+          topics: string[]
+        }
+        Insert: {
+          description?: string | null
+          detected_at?: string
+          ethical?: boolean
+          example_cmd?: string | null
+          forks?: number
+          full_name: string
+          github_url: string
+          homepage?: string | null
+          id?: string
+          install_cmd?: string | null
+          language?: string | null
+          last_commit?: string | null
+          level?: string | null
+          license?: string | null
+          name: string
+          readme_excerpt?: string | null
+          reject_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          score?: number
+          source?: string
+          source_query?: string | null
+          stars?: number
+          status?: string
+          suggested_category?: string | null
+          topics?: string[]
+        }
+        Update: {
+          description?: string | null
+          detected_at?: string
+          ethical?: boolean
+          example_cmd?: string | null
+          forks?: number
+          full_name?: string
+          github_url?: string
+          homepage?: string | null
+          id?: string
+          install_cmd?: string | null
+          language?: string | null
+          last_commit?: string | null
+          level?: string | null
+          license?: string | null
+          name?: string
+          readme_excerpt?: string | null
+          reject_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          score?: number
+          source?: string
+          source_query?: string | null
+          stars?: number
+          status?: string
+          suggested_category?: string | null
+          topics?: string[]
+        }
+        Relationships: []
+      }
+      discovery_runs: {
+        Row: {
+          duration_ms: number | null
+          error: string | null
+          fetched_count: number
+          id: string
+          kept_count: number
+          query: string | null
+          run_at: string
+          source: string
+        }
+        Insert: {
+          duration_ms?: number | null
+          error?: string | null
+          fetched_count?: number
+          id?: string
+          kept_count?: number
+          query?: string | null
+          run_at?: string
+          source: string
+        }
+        Update: {
+          duration_ms?: number | null
+          error?: string | null
+          fetched_count?: number
+          id?: string
+          kept_count?: number
+          query?: string | null
+          run_at?: string
+          source?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +328,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
