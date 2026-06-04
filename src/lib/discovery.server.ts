@@ -24,16 +24,35 @@ export type GhRepo = {
 const SEARCH_QUERIES = [
   "topic:cli",
   "topic:command-line-tool",
+  "topic:terminal",
+  "topic:shell",
+  "topic:tui",
   "topic:osint",
   "topic:pentest",
+  "topic:pentesting",
+  "topic:hacking",
+  "topic:security-tools",
+  "topic:web-security",
   "topic:forensics",
+  "topic:dfir",
   "topic:incident-response",
+  "topic:reverse-engineering",
+  "topic:malware-analysis",
   "topic:devops",
+  "topic:devops-tools",
+  "topic:kubernetes",
+  "topic:docker",
   "topic:sysadmin",
+  "topic:linux",
+  "topic:monitoring",
+  "topic:observability",
   "topic:blue-team",
   "topic:threat-hunting",
   "topic:network-security",
+  "topic:networking",
   "topic:bug-bounty",
+  "topic:productivity",
+  "topic:developer-tools",
 ];
 
 const ETHICAL_HINTS = [
@@ -130,8 +149,8 @@ function authHeaders(): HeadersInit {
   return h;
 }
 
-async function searchRepos(query: string, perPage = 15): Promise<GhRepo[]> {
-  const q = `${query} pushed:>${cutoffISO()} stars:>50 fork:false archived:false`;
+async function searchRepos(query: string, perPage = 30): Promise<GhRepo[]> {
+  const q = `${query} pushed:>${cutoffISO()} stars:>30 fork:false archived:false`;
   const url = `${GH}/search/repositories?q=${encodeURIComponent(q)}&sort=stars&order=desc&per_page=${perPage}`;
   const res = await fetch(url, { headers: authHeaders() });
   if (!res.ok) {
@@ -194,7 +213,7 @@ export async function runDiscovery(): Promise<DiscoveryRunResult> {
         if (known.has(repo.full_name)) continue;
         const readme = await fetchReadme(repo.full_name);
         const score = scoreRepo(repo, readme);
-        if (score < 35) continue;
+        if (score < 25) continue;
         const topics = repo.topics ?? [];
         inserts.push({
           name: repo.name,
