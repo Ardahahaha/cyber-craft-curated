@@ -265,17 +265,16 @@ export async function runDiscovery(): Promise<DiscoveryRunResult> {
   return { totalFetched, totalKept, errors };
 }
 
-export async function rotateDailyTool(): Promise<{ chosen: string | null }> {
+export async function rotateDailyTool(count = 5): Promise<{ chosen: string | null; chosenIds: string[] }> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const today = new Date().toISOString().slice(0, 10);
 
-  // Already chosen today?
-  const { data: existing } = await supabaseAdmin
+  // Tools already featured today
+  const { data: todayRows } = await supabaseAdmin
     .from("daily_tool")
     .select("tool_id")
-    .eq("featured_date", today)
-    .maybeSingle();
-  if (existing) return { chosen: existing.tool_id };
+    .eq("featured_date", today);
+  const todayIds = new Set((todayRows ?? []).map((r) => r.tool_id));
 
   // Tools already featured in past 30 days to avoid repetition
   const since = new Date();
@@ -291,16 +290,23 @@ export async function rotateDailyTool(): Promise<{ chosen: string | null }> {
     .select("id, score")
     .eq("status", "approved")
     .order("score", { ascending: false })
-    .limit(50);
+    .limit(100);
 
-  const pick = (candidates ?? []).find((c) => !recentIds.has(c.id))
-    ?? candidates?.[0];
-  if (!pick) return { chosen: null };
-
-  await supabaseAdmin.from("daily_tool").insert({
-    tool_id: pick.id,
-    featured_date: today,
-    reason: "Sélection automatique du meilleur score disponible.",
-  });
-  return { chosen: pick.id };
+  const chosenIds: string[] = [];
+  const remaining = Math.max(0, count - todayIds.size);
+  if (remaining > 0) {
+    const fresh = (candidates ?? []).filter((c) => !recentIds.has(c.id) && !todayIds.has(c.id));
+    const pool = fresh.length >= remaining ? fresh : (candidates ?? []).filter((c) => !todayIds.has(c.id));
+    for (const c of pool.slice(0, remaining)) chosenIds.push(c.id);
+    if (chosenIds.length) {
+      await supabaseAdmin.from("daily_tool").insert(
+        chosenIds.map((id) => ({
+          tool_id: id,
+          featured_date: today,
+          reason: "Sélection automatique du meilleur score disponible.",
+        })),
+      );
+    }
+  }
+  return { chosen: chosenIds[0] ?? null, chosenIds };
 }
