@@ -149,8 +149,8 @@ function authHeaders(): HeadersInit {
   return h;
 }
 
-async function searchRepos(query: string, perPage = 15): Promise<GhRepo[]> {
-  const q = `${query} pushed:>${cutoffISO()} stars:>50 fork:false archived:false`;
+async function searchRepos(query: string, perPage = 30): Promise<GhRepo[]> {
+  const q = `${query} pushed:>${cutoffISO()} stars:>30 fork:false archived:false`;
   const url = `${GH}/search/repositories?q=${encodeURIComponent(q)}&sort=stars&order=desc&per_page=${perPage}`;
   const res = await fetch(url, { headers: authHeaders() });
   if (!res.ok) {
