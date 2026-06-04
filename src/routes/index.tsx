@@ -195,57 +195,37 @@ function Home() {
         </div>
       </section>
 
-      {/* TOOL OF DAY + COMMAND OF DAY */}
-      <section className="mx-auto max-w-7xl px-4 pb-12 sm:px-6">
-        <div className="grid gap-4 lg:grid-cols-2">
-          {/* tool of day */}
-          <div className="rounded-xl border border-border bg-gradient-card p-6 shadow-card-cyber">
-            <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-cyber-cyan">
-              <Calendar className="h-3.5 w-3.5" />
-              outil du jour
-            </div>
-            <Link to="/outils/$slug" params={{ slug: toolOfDay.slug }} className="mt-4 flex items-start gap-4 group">
-              <ToolLogo tool={toolOfDay} size={56} />
-              <div className="min-w-0 flex-1">
-                <p className="font-display text-xl font-bold group-hover:text-primary transition">{toolOfDay.name}</p>
-                <p className="mt-1 text-sm text-muted-foreground line-clamp-2">{toolOfDay.short}</p>
-                <div className="mt-3 flex flex-wrap gap-1.5">
-                  {toolOfDay.tags.slice(0, 3).map(t => (
-                    <span key={t} className="rounded bg-secondary/60 px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground">#{t}</span>
-                  ))}
-                </div>
-              </div>
-              <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-1 group-hover:text-primary transition" />
-            </Link>
-          </div>
+      {/* DISCOVERY : Tools du jour + Tools de la semaine */}
+      <DiscoverySections />
 
-          {/* command of day */}
-          <div className="rounded-xl border border-border bg-gradient-card p-6 shadow-card-cyber">
-            <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-accent">
-              <Zap className="h-3.5 w-3.5" />
-              commande du jour
+      {/* COMMANDE DU JOUR */}
+      <section className="mx-auto max-w-7xl px-4 pb-12 sm:px-6">
+        <div className="rounded-xl border border-border bg-gradient-card p-6 shadow-card-cyber max-w-2xl">
+          <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-accent">
+            <Zap className="h-3.5 w-3.5" />
+            commande du jour
+          </div>
+          <Link to="/outils/$slug" params={{ slug: cmdOfDay.slug }} className="mt-3 block hover:text-primary">
+            <p className="font-display text-sm font-semibold">{cmdOfDay.name}</p>
+          </Link>
+          <div className="mt-3 overflow-hidden rounded-md border border-border bg-background/70">
+            <div className="flex items-center justify-between border-b border-border px-2.5 py-1 text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
+              <span>$ snippet</span>
+              <button
+                onClick={() => copyCommand(cmdOfDay.command)}
+                className="inline-flex items-center gap-1 text-muted-foreground hover:text-primary"
+                aria-label="Copier"
+              >
+                {copiedCmd ? <Check className="h-3 w-3 text-cyber-cyan" /> : <Copy className="h-3 w-3" />}
+              </button>
             </div>
-            <Link to="/outils/$slug" params={{ slug: cmdOfDay.slug }} className="mt-3 block">
-              <p className="font-display text-sm font-semibold text-foreground/90">{cmdOfDay.name}</p>
-            </Link>
-            <div className="mt-3 overflow-hidden rounded-md border border-border bg-background/70">
-              <div className="flex items-center justify-between border-b border-border px-2.5 py-1 text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
-                <span>$ snippet</span>
-                <button
-                  onClick={() => copyCommand(cmdOfDay.command)}
-                  className="inline-flex items-center gap-1 text-muted-foreground hover:text-primary"
-                  aria-label="Copier"
-                >
-                  {copiedCmd ? <Check className="h-3 w-3 text-cyber-cyan" /> : <Copy className="h-3 w-3" />}
-                </button>
-              </div>
-              <pre className="overflow-x-auto px-2.5 py-2 font-mono text-[12px] leading-snug text-cyber-cyan">
-                <span className="text-muted-foreground">$ </span>{cmdOfDay.command}
-              </pre>
-            </div>
+            <pre className="overflow-x-auto px-2.5 py-2 font-mono text-[12px] leading-snug text-cyber-cyan">
+              <span className="text-muted-foreground">$ </span>{cmdOfDay.command}
+            </pre>
           </div>
         </div>
       </section>
+
 
 
       {/* DERNIERS AJOUTS + TOP DÉBUTANTS + TOP AVANCÉS */}
