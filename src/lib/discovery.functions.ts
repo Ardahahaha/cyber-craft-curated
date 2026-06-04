@@ -162,7 +162,10 @@ export const setDailyTool = createServerFn({ method: "POST" })
     const today = new Date().toISOString().slice(0, 10);
     const { error } = await supabaseAdmin
       .from("daily_tool")
-      .upsert({ tool_id: data.toolId, featured_date: today, reason: data.reason ?? null }, { onConflict: "featured_date" });
+      .upsert(
+        { tool_id: data.toolId, featured_date: today, reason: data.reason ?? null },
+        { onConflict: "tool_id,featured_date" },
+      );
     if (error) throw new Error(error.message);
     return { ok: true };
   });
