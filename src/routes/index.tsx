@@ -11,6 +11,7 @@ import { HeroBackground } from "@/components/HeroBackground";
 import { TerminalSnippet } from "@/components/TerminalSnippet";
 import { ToolCard } from "@/components/ToolCard";
 import { ToolLogo } from "@/components/ToolLogo";
+import { DiscoverySections } from "@/components/DiscoverySections";
 import { categories, tools, type Level, type CategorySlug, type Tool } from "@/data/tools";
 
 export const Route = createFileRoute("/")({
