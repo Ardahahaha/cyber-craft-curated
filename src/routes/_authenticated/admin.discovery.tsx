@@ -48,36 +48,39 @@ function AdminDiscovery() {
     queryKey: ["discovery-stats"],
     queryFn: () => getStats(),
     enabled: !!admin.data?.admin,
+    refetchInterval: 15000,
+    refetchOnWindowFocus: true,
   });
   const list = useQuery({
     queryKey: ["discovery-list", status, search],
     queryFn: () => getList({ data: { status, search: search || undefined, limit: 100 } }),
     enabled: !!admin.data?.admin,
+    refetchInterval: 30000,
   });
+
+  const invalidateAll = () => {
+    qc.invalidateQueries({ queryKey: ["discovery-stats"] });
+    qc.invalidateQueries({ queryKey: ["discovery-list"] });
+  };
 
   const runMut = useMutation({
     mutationFn: () => runNow(),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["discovery-stats"] });
-      qc.invalidateQueries({ queryKey: ["discovery-list"] });
-    },
+    onSuccess: invalidateAll,
   });
   const reviewMut = useMutation({
     mutationFn: (vars: { id: string; action: "approve" | "reject" }) =>
       review({ data: vars }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["discovery-list"] }),
+    onSuccess: invalidateAll,
   });
   const bulkMut = useMutation({
     mutationFn: () => bulk({ data: { minScore: 80 } }),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["discovery-list"] });
-      qc.invalidateQueries({ queryKey: ["discovery-stats"] });
-    },
+    onSuccess: invalidateAll,
   });
   const dailyMut = useMutation({
     mutationFn: (toolId: string) => setDaily({ data: { toolId } }),
+    onSuccess: invalidateAll,
   });
-  const pickMut = useMutation({ mutationFn: () => pickDaily() });
+  const pickMut = useMutation({ mutationFn: () => pickDaily(), onSuccess: invalidateAll });
 
   const logout = async () => {
     await supabase.auth.signOut();

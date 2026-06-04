@@ -162,7 +162,10 @@ export const setDailyTool = createServerFn({ method: "POST" })
     const today = new Date().toISOString().slice(0, 10);
     const { error } = await supabaseAdmin
       .from("daily_tool")
-      .upsert({ tool_id: data.toolId, featured_date: today, reason: data.reason ?? null }, { onConflict: "featured_date" });
+      .upsert(
+        { tool_id: data.toolId, featured_date: today, reason: data.reason ?? null },
+        { onConflict: "tool_id,featured_date" },
+      );
     if (error) throw new Error(error.message);
     return { ok: true };
   });
@@ -218,4 +221,57 @@ export const getApprovedTools = createServerFn({ method: "POST" })
     if (data.search) q = q.ilike("name", `%${data.search}%`);
     const { data: rows } = await q;
     return { rows: rows ?? [] };
+  });
+
+export const getDailyTools = createServerFn({ method: "GET" }).handler(async () => {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const today = new Date().toISOString().slice(0, 10);
+  const { data } = await supabaseAdmin
+    .from("daily_tool")
+    .select("featured_date, reason, tool:discovered_tools(*)")
+    .eq("featured_date", today)
+    .order("created_at", { ascending: false });
+  if (data && data.length) return { rows: data };
+  // Fallback : dernière journée disponible
+  const { data: latestDate } = await supabaseAdmin
+    .from("daily_tool")
+    .select("featured_date")
+    .order("featured_date", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (!latestDate) return { rows: [] };
+  const { data: fallback } = await supabaseAdmin
+    .from("daily_tool")
+    .select("featured_date, reason, tool:discovered_tools(*)")
+    .eq("featured_date", latestDate.featured_date)
+    .order("created_at", { ascending: false });
+  return { rows: fallback ?? [] };
+});
+
+export const getWeeklyTools = createServerFn({ method: "GET" }).handler(async () => {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const since = new Date();
+  since.setDate(since.getDate() - 7);
+  const { data } = await supabaseAdmin
+    .from("discovered_tools")
+    .select("*")
+    .eq("status", "approved")
+    .gte("detected_at", since.toISOString())
+    .order("score", { ascending: false })
+    .limit(12);
+  return { rows: data ?? [] };
+});
+
+export const getDiscoveredTool = createServerFn({ method: "POST" })
+  .inputValidator((input) => z.object({ id: z.string().uuid() }).parse(input))
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: tool, error } = await supabaseAdmin
+      .from("discovered_tools")
+      .select("*")
+      .eq("id", data.id)
+      .eq("status", "approved")
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    return { tool };
   });
