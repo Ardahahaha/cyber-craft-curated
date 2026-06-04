@@ -213,7 +213,7 @@ export async function runDiscovery(): Promise<DiscoveryRunResult> {
         if (known.has(repo.full_name)) continue;
         const readme = await fetchReadme(repo.full_name);
         const score = scoreRepo(repo, readme);
-        if (score < 35) continue;
+        if (score < 25) continue;
         const topics = repo.topics ?? [];
         inserts.push({
           name: repo.name,
