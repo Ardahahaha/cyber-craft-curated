@@ -179,15 +179,20 @@ function DailyCard({ tool, reason }: { tool: DiscoveredTool; reason: string | nu
       params={{ id: tool.id }}
       className="group block rounded-2xl border border-primary/30 bg-gradient-card p-5 shadow-card-cyber transition hover:border-primary/60 hover:-translate-y-0.5"
     >
-      <div className="flex items-center justify-between gap-2">
-        <p className="font-display text-lg font-bold group-hover:text-primary truncate">{tool.name}</p>
-        <span className="font-mono text-[11px] font-bold text-cyber-emerald shrink-0">{tool.score}</span>
+      <div className="flex items-start gap-3">
+        <RepoLogo url={tool.github_url} name={tool.name} size={48} />
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center justify-between gap-2">
+            <p className="font-display text-lg font-bold group-hover:text-primary truncate">{tool.name}</p>
+            <span className="font-mono text-[11px] font-bold text-cyber-emerald shrink-0">{tool.score}</span>
+          </div>
+          {tool.suggested_category && (
+            <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+              {tool.suggested_category} · {tool.language ?? "—"}
+            </p>
+          )}
+        </div>
       </div>
-      {tool.suggested_category && (
-        <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-          {tool.suggested_category} · {tool.language ?? "—"}
-        </p>
-      )}
       <p className="mt-2 line-clamp-3 text-sm text-foreground/85">{tool.description}</p>
       {reason && <p className="mt-2 text-[11px] text-muted-foreground italic line-clamp-2">{reason}</p>}
       <div className="mt-4 flex items-center justify-between text-[11px] font-mono text-muted-foreground">
