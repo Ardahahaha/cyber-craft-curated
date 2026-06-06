@@ -143,13 +143,18 @@ export function DiscoverySections() {
                 params={{ id: t.id }}
                 className="group rounded-xl border border-border bg-gradient-card p-4 transition hover:border-primary/40 hover:-translate-y-0.5"
               >
-                <div className="flex items-center justify-between gap-2">
-                  <p className="font-display text-base font-bold group-hover:text-primary truncate">{t.name}</p>
-                  <span className="font-mono text-[10px] text-cyber-emerald shrink-0">{t.score}</span>
+                <div className="flex items-start gap-3">
+                  <RepoLogo url={t.github_url} name={t.name} size={36} />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="font-display text-base font-bold group-hover:text-primary truncate">{t.name}</p>
+                      <span className="font-mono text-[10px] text-cyber-emerald shrink-0">{t.score}</span>
+                    </div>
+                    <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground truncate">
+                      {t.suggested_category} · {t.language ?? "—"}
+                    </p>
+                  </div>
                 </div>
-                <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground truncate">
-                  {t.suggested_category} · {t.language ?? "—"}
-                </p>
                 <p className="mt-2 line-clamp-2 text-xs text-muted-foreground">{t.description}</p>
                 <div className="mt-3 flex items-center justify-between text-[10px] font-mono text-muted-foreground">
                   <div className="flex items-center gap-3">
