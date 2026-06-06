@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -210,10 +210,16 @@ function AdminDiscovery() {
               <tr key={t.id} className="border-t border-border hover:bg-secondary/20">
                 <td className="px-3 py-2">
                   <div className="flex items-center gap-2">
-                    <a href={t.github_url} target="_blank" rel="noreferrer" className="font-semibold hover:text-primary">
+                    <Link
+                      to="/outils/discovered/$id"
+                      params={{ id: t.id }}
+                      className="font-semibold hover:text-primary"
+                    >
                       {t.name}
+                    </Link>
+                    <a href={t.github_url} target="_blank" rel="noreferrer" title="Voir sur GitHub">
+                      <ExternalLink className="h-3 w-3 text-muted-foreground hover:text-primary" />
                     </a>
-                    <ExternalLink className="h-3 w-3 text-muted-foreground" />
                     {t.ethical && (
                       <span className="rounded border border-destructive/30 bg-destructive/10 px-1.5 py-0.5 text-[9px] font-mono uppercase text-destructive">
                         sensible

@@ -1,7 +1,40 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Sparkles, ExternalLink, Star, GitFork, CalendarDays, ArrowRight } from "lucide-react";
+import { Sparkles, ExternalLink, Star, GitFork, CalendarDays, ArrowRight, TerminalSquare } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+
+function ghOwner(url: string): string | null {
+  const m = url.match(/github\.com\/([^/]+)/i);
+  return m ? m[1] : null;
+}
+
+function RepoLogo({ url, name, size = 40 }: { url: string; name: string; size?: number }) {
+  const owner = ghOwner(url);
+  const [errored, setErrored] = useState(false);
+  if (!owner || errored) {
+    return (
+      <div
+        className="flex shrink-0 items-center justify-center rounded-md border border-border bg-secondary/40 text-primary"
+        style={{ width: size, height: size }}
+        aria-hidden
+      >
+        <TerminalSquare className="h-1/2 w-1/2" />
+      </div>
+    );
+  }
+  return (
+    <img
+      src={`https://github.com/${owner}.png?size=${size * 2}`}
+      alt={`${name} logo`}
+      width={size}
+      height={size}
+      loading="lazy"
+      onError={() => setErrored(true)}
+      className="shrink-0 rounded-md border border-border bg-secondary/40 object-cover"
+      style={{ width: size, height: size }}
+    />
+  );
+}
 
 type DiscoveredTool = {
   id: string;
@@ -99,7 +132,7 @@ export function DiscoverySections() {
               <div className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-widest text-accent">
                 <CalendarDays className="h-3.5 w-3.5" /> tools de la semaine
               </div>
-              <h2 className="mt-1 font-display text-2xl font-bold">Détectés ces 7 derniers jours</h2>
+              <h2 className="mt-1 font-display text-2xl font-bold">Tools de la semaine</h2>
             </div>
           </div>
           <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -110,13 +143,18 @@ export function DiscoverySections() {
                 params={{ id: t.id }}
                 className="group rounded-xl border border-border bg-gradient-card p-4 transition hover:border-primary/40 hover:-translate-y-0.5"
               >
-                <div className="flex items-center justify-between gap-2">
-                  <p className="font-display text-base font-bold group-hover:text-primary truncate">{t.name}</p>
-                  <span className="font-mono text-[10px] text-cyber-emerald shrink-0">{t.score}</span>
+                <div className="flex items-start gap-3">
+                  <RepoLogo url={t.github_url} name={t.name} size={36} />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="font-display text-base font-bold group-hover:text-primary truncate">{t.name}</p>
+                      <span className="font-mono text-[10px] text-cyber-emerald shrink-0">{t.score}</span>
+                    </div>
+                    <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground truncate">
+                      {t.suggested_category} · {t.language ?? "—"}
+                    </p>
+                  </div>
                 </div>
-                <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground truncate">
-                  {t.suggested_category} · {t.language ?? "—"}
-                </p>
                 <p className="mt-2 line-clamp-2 text-xs text-muted-foreground">{t.description}</p>
                 <div className="mt-3 flex items-center justify-between text-[10px] font-mono text-muted-foreground">
                   <div className="flex items-center gap-3">
@@ -141,15 +179,20 @@ function DailyCard({ tool, reason }: { tool: DiscoveredTool; reason: string | nu
       params={{ id: tool.id }}
       className="group block rounded-2xl border border-primary/30 bg-gradient-card p-5 shadow-card-cyber transition hover:border-primary/60 hover:-translate-y-0.5"
     >
-      <div className="flex items-center justify-between gap-2">
-        <p className="font-display text-lg font-bold group-hover:text-primary truncate">{tool.name}</p>
-        <span className="font-mono text-[11px] font-bold text-cyber-emerald shrink-0">{tool.score}</span>
+      <div className="flex items-start gap-3">
+        <RepoLogo url={tool.github_url} name={tool.name} size={48} />
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center justify-between gap-2">
+            <p className="font-display text-lg font-bold group-hover:text-primary truncate">{tool.name}</p>
+            <span className="font-mono text-[11px] font-bold text-cyber-emerald shrink-0">{tool.score}</span>
+          </div>
+          {tool.suggested_category && (
+            <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+              {tool.suggested_category} · {tool.language ?? "—"}
+            </p>
+          )}
+        </div>
       </div>
-      {tool.suggested_category && (
-        <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-          {tool.suggested_category} · {tool.language ?? "—"}
-        </p>
-      )}
       <p className="mt-2 line-clamp-3 text-sm text-foreground/85">{tool.description}</p>
       {reason && <p className="mt-2 text-[11px] text-muted-foreground italic line-clamp-2">{reason}</p>}
       <div className="mt-4 flex items-center justify-between text-[11px] font-mono text-muted-foreground">
