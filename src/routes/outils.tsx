@@ -217,20 +217,39 @@ function ToolsPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
-        <p className="mb-6 font-mono text-xs text-muted-foreground">
-          → {filtered.length} résultat{filtered.length > 1 ? "s" : ""}
-        </p>
-        {filtered.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-border bg-secondary/30 p-12 text-center">
-            <p className="font-display text-lg font-semibold">Aucun outil trouvé</p>
-            <p className="mt-1 text-sm text-muted-foreground">Essayez d'autres mots-clés ou filtres.</p>
-          </div>
-        ) : (
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((t) => <ToolCard key={t.slug} tool={t} />)}
+      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 space-y-12">
+        {filteredDiscovered.length > 0 && (
+          <div>
+            <div className="mb-5 flex items-end justify-between">
+              <div>
+                <p className="font-mono text-[11px] uppercase tracking-widest text-cyber-cyan inline-flex items-center gap-2">
+                  <Sparkles className="h-3.5 w-3.5" /> discovery · auto
+                </p>
+                <h2 className="mt-1 font-display text-2xl font-bold">Tools détectés ({filteredDiscovered.length})</h2>
+                <p className="mt-1 text-xs text-muted-foreground">Sélectionnés automatiquement depuis GitHub par notre scraper.</p>
+              </div>
+            </div>
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {filteredDiscovered.map((t) => <DiscoveredCard key={t.id} tool={t} />)}
+            </div>
           </div>
         )}
+
+        <div>
+          <p className="mb-6 font-mono text-xs text-muted-foreground">
+            → {filtered.length} outil{filtered.length > 1 ? "s" : ""} curaté{filtered.length > 1 ? "s" : ""}
+          </p>
+          {filtered.length === 0 ? (
+            <div className="rounded-xl border border-dashed border-border bg-secondary/30 p-12 text-center">
+              <p className="font-display text-lg font-semibold">Aucun outil trouvé</p>
+              <p className="mt-1 text-sm text-muted-foreground">Essayez d'autres mots-clés ou filtres.</p>
+            </div>
+          ) : (
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {filtered.map((t) => <ToolCard key={t.slug} tool={t} />)}
+            </div>
+          )}
+        </div>
       </section>
 
       <Footer />
