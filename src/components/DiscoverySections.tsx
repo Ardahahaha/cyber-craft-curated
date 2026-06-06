@@ -1,7 +1,40 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Sparkles, ExternalLink, Star, GitFork, CalendarDays, ArrowRight } from "lucide-react";
+import { Sparkles, ExternalLink, Star, GitFork, CalendarDays, ArrowRight, TerminalSquare } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+
+function ghOwner(url: string): string | null {
+  const m = url.match(/github\.com\/([^/]+)/i);
+  return m ? m[1] : null;
+}
+
+function RepoLogo({ url, name, size = 40 }: { url: string; name: string; size?: number }) {
+  const owner = ghOwner(url);
+  const [errored, setErrored] = useState(false);
+  if (!owner || errored) {
+    return (
+      <div
+        className="flex shrink-0 items-center justify-center rounded-md border border-border bg-secondary/40 text-primary"
+        style={{ width: size, height: size }}
+        aria-hidden
+      >
+        <TerminalSquare className="h-1/2 w-1/2" />
+      </div>
+    );
+  }
+  return (
+    <img
+      src={`https://github.com/${owner}.png?size=${size * 2}`}
+      alt={`${name} logo`}
+      width={size}
+      height={size}
+      loading="lazy"
+      onError={() => setErrored(true)}
+      className="shrink-0 rounded-md border border-border bg-secondary/40 object-cover"
+      style={{ width: size, height: size }}
+    />
+  );
+}
 
 type DiscoveredTool = {
   id: string;
