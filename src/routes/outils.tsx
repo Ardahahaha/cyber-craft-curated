@@ -1,13 +1,84 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { Search, X } from "lucide-react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
+import { Search, X, Sparkles, Star, GitFork, ArrowRight, TerminalSquare } from "lucide-react";
 import { z } from "zod";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { ToolCard } from "@/components/ToolCard";
 import { categories, tools, type Level, type CategorySlug } from "@/data/tools";
+import { supabase } from "@/integrations/supabase/client";
 
 const levels: Level[] = ["Débutant", "Intermédiaire", "Avancé"];
+
+type DiscoveredTool = {
+  id: string;
+  name: string;
+  full_name: string;
+  github_url: string;
+  description: string | null;
+  language: string | null;
+  stars: number;
+  forks: number;
+  score: number;
+  suggested_category: string | null;
+};
+
+function ghOwner(url: string): string | null {
+  const m = url.match(/github\.com\/([^/]+)/i);
+  return m ? m[1] : null;
+}
+
+function RepoLogo({ url, name, size = 40 }: { url: string; name: string; size?: number }) {
+  const owner = ghOwner(url);
+  const [errored, setErrored] = useState(false);
+  if (!owner || errored) {
+    return (
+      <div className="flex shrink-0 items-center justify-center rounded-md border border-border bg-secondary/40 text-primary"
+        style={{ width: size, height: size }} aria-hidden>
+        <TerminalSquare className="h-1/2 w-1/2" />
+      </div>
+    );
+  }
+  return (
+    <img src={`https://github.com/${owner}.png?size=${size * 2}`} alt={`${name} logo`} width={size} height={size}
+      loading="lazy" onError={() => setErrored(true)}
+      className="shrink-0 rounded-md border border-border bg-secondary/40 object-cover"
+      style={{ width: size, height: size }} />
+  );
+}
+
+function DiscoveredCard({ tool }: { tool: DiscoveredTool }) {
+  return (
+    <Link to="/outils/discovered/$id" params={{ id: tool.id }}
+      className="group block rounded-xl border border-primary/30 bg-gradient-card p-5 shadow-card-cyber transition hover:border-primary/60 hover:-translate-y-0.5">
+      <div className="flex items-start gap-3">
+        <RepoLogo url={tool.github_url} name={tool.name} size={44} />
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-wider text-cyber-cyan">
+            <Sparkles className="h-3 w-3" /> détecté
+          </div>
+          <div className="mt-1 flex items-center justify-between gap-2">
+            <h3 className="font-display text-lg font-bold truncate group-hover:text-primary">{tool.name}</h3>
+            <span className="font-mono text-[11px] font-bold text-cyber-emerald shrink-0">{tool.score}</span>
+          </div>
+          <p className="mt-0.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground truncate">
+            {tool.suggested_category ?? "outil"} · {tool.language ?? "—"}
+          </p>
+        </div>
+      </div>
+      <p className="mt-3 line-clamp-3 text-sm text-muted-foreground">{tool.description}</p>
+      <div className="mt-4 flex items-center justify-between text-[11px] font-mono text-muted-foreground">
+        <div className="flex items-center gap-3">
+          <span className="inline-flex items-center gap-1"><Star className="h-3 w-3" />{tool.stars}</span>
+          <span className="inline-flex items-center gap-1"><GitFork className="h-3 w-3" />{tool.forks}</span>
+        </div>
+        <span className="inline-flex items-center gap-1 text-primary group-hover:translate-x-1 transition">
+          Voir la fiche <ArrowRight className="h-3 w-3" />
+        </span>
+      </div>
+    </Link>
+  );
+}
 
 const searchSchema = z.object({
   q: z.string().optional(),
