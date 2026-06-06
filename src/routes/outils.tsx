@@ -130,6 +130,33 @@ function ToolsPage() {
     });
   }, [q, cat, lvl]);
 
+  const [discovered, setDiscovered] = useState<DiscoveredTool[]>([]);
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase
+        .from("discovered_tools")
+        .select("id, name, full_name, github_url, description, language, stars, forks, score, suggested_category")
+        .eq("status", "approved")
+        .order("score", { ascending: false })
+        .limit(48);
+      setDiscovered((data ?? []) as DiscoveredTool[]);
+    })();
+  }, []);
+
+  const filteredDiscovered = useMemo(() => {
+    const term = q.trim().toLowerCase();
+    return discovered.filter((t) => {
+      if (cat !== "all" && (t.suggested_category ?? "") !== cat) return false;
+      if (!term) return true;
+      return (
+        t.name.toLowerCase().includes(term) ||
+        (t.description ?? "").toLowerCase().includes(term) ||
+        (t.language ?? "").toLowerCase().includes(term) ||
+        (t.suggested_category ?? "").toLowerCase().includes(term)
+      );
+    });
+  }, [discovered, q, cat]);
+
   return (
     <div className="min-h-screen">
       <Navbar />
