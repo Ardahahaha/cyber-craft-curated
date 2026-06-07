@@ -61,14 +61,13 @@ export function DiscoverySections() {
   useEffect(() => {
     (async () => {
       const today = new Date().toISOString().slice(0, 10);
-      // Try today's daily tools first
+      // Récupérer les outils du jour
       let { data: dailyRows } = await supabase
         .from("daily_tool")
         .select("featured_date, reason, tool:discovered_tools(*)")
         .eq("featured_date", today)
         .order("created_at", { ascending: false });
 
-      // Fallback : dernière journée disponible
       if (!dailyRows || dailyRows.length === 0) {
         const { data: latest } = await supabase
           .from("daily_tool")
@@ -85,18 +84,24 @@ export function DiscoverySections() {
           dailyRows = fb ?? [];
         }
       }
-      setDaily((dailyRows ?? []).filter((r: any) => r.tool) as unknown as DailyRow[]);
+      const filteredDaily = (dailyRows ?? []).filter((r: any) => r.tool) as unknown as DailyRow[];
+      setDaily(filteredDaily);
 
-      // Outils de la semaine (7 derniers jours)
+      // Outils de la semaine (7 derniers jours) sans les outils du jour
+      const dailyIds = filteredDaily.map((d) => d.tool.id);
       const since = new Date();
       since.setDate(since.getDate() - 7);
-      const { data: weekRows } = await supabase
+      let query = supabase
         .from("discovered_tools")
         .select("*")
         .eq("status", "approved")
         .gte("detected_at", since.toISOString())
         .order("score", { ascending: false })
         .limit(12);
+      if (dailyIds.length > 0) {
+        query = query.not("id", "in", `(${dailyIds.join(",")})`);
+      }
+      const { data: weekRows } = await query;
       setWeekly((weekRows ?? []) as unknown as DiscoveredTool[]);
     })();
   }, []);
