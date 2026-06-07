@@ -113,7 +113,7 @@ export function DiscoverySections() {
                 <Sparkles className="h-3.5 w-3.5" /> tools du jour · discovery
               </div>
               <h2 className="mt-1 font-display text-2xl font-bold">
-                {daily.length} nouveau{daily.length > 1 ? "x" : ""} outil{daily.length > 1 ? "s" : ""} sélectionné{daily.length > 1 ? "s" : ""}
+                {daily.length} nouveaux outils sélectionnés aujourd'hui
               </h2>
             </div>
           </div>
