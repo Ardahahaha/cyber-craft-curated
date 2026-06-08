@@ -256,15 +256,9 @@ function Home() {
 
 
 
-      {/* DERNIERS AJOUTS + TOP DÉBUTANTS + TOP AVANCÉS */}
+      {/* TOP DÉBUTANTS + TOP AVANCÉS */}
       <section className="mx-auto max-w-7xl px-4 pb-12 sm:px-6">
-        <div className="grid gap-6 lg:grid-cols-3">
-          <MiniList
-            title="Derniers ajouts"
-            tone="text-cyber-cyan"
-            icon={<TerminalSquare className="h-3.5 w-3.5" />}
-            items={recent}
-          />
+        <div className="grid gap-6 lg:grid-cols-2">
           <MiniList
             title="Top 10 — Débutant"
             tone="text-cyber-emerald"
