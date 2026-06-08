@@ -4,7 +4,7 @@ import {
   TerminalSquare, Sparkles, Github, Layers, X, Cloud, Code2, Database, ShieldAlert, Bug,
   Calendar, Zap, GraduationCap, Flame, Copy, Check,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { HeroBackground } from "@/components/HeroBackground";
@@ -12,6 +12,7 @@ import { TerminalSnippet } from "@/components/TerminalSnippet";
 import { ToolCard } from "@/components/ToolCard";
 import { ToolLogo } from "@/components/ToolLogo";
 import { DiscoverySections } from "@/components/DiscoverySections";
+import { supabase } from "@/integrations/supabase/client";
 import { categories, tools, type Level, type CategorySlug, type Tool } from "@/data/tools";
 
 export const Route = createFileRoute("/")({
