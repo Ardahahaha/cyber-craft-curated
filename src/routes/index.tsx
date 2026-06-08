@@ -4,7 +4,7 @@ import {
   TerminalSquare, Sparkles, Github, Layers, X, Cloud, Code2, Database, ShieldAlert, Bug,
   Calendar, Zap, GraduationCap, Flame, Copy, Check,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { HeroBackground } from "@/components/HeroBackground";
@@ -12,6 +12,7 @@ import { TerminalSnippet } from "@/components/TerminalSnippet";
 import { ToolCard } from "@/components/ToolCard";
 import { ToolLogo } from "@/components/ToolLogo";
 import { DiscoverySections } from "@/components/DiscoverySections";
+import { supabase } from "@/integrations/supabase/client";
 import { categories, tools, type Level, type CategorySlug, type Tool } from "@/data/tools";
 
 export const Route = createFileRoute("/")({
@@ -60,6 +61,31 @@ function Home() {
   const [os, setOs] = useState<OSFilter | "all">("all");
 
   const [copiedCmd, setCopiedCmd] = useState(false);
+
+  const [discStats, setDiscStats] = useState({ total: 0, beginner: 0, advanced: 0, categories: 0 });
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase
+        .from("discovered_tools")
+        .select("level, suggested_category")
+        .eq("status", "approved");
+      const rows = data ?? [];
+      const cats = new Set<string>();
+      let beginner = 0, advanced = 0;
+      for (const r of rows as any[]) {
+        if (r.suggested_category) cats.add(r.suggested_category);
+        if (r.level === "Débutant") beginner++;
+        else if (r.level === "Avancé") advanced++;
+      }
+      setDiscStats({ total: rows.length, beginner, advanced, categories: cats.size });
+    })();
+  }, []);
+
+  const totalTools = tools.length + discStats.total;
+  const totalCategories = categories.length + discStats.categories;
+  const totalBeginner = tools.filter(t => t.level === "Débutant").length + discStats.beginner;
+  const totalAdvanced = tools.filter(t => t.level === "Avancé").length + discStats.advanced;
 
   const recent = useMemo(() => tools.filter((t) => t.recent).slice(0, 6), []);
   const beginners = useMemo(
@@ -117,7 +143,7 @@ function Home() {
             <div className="lg:col-span-7">
               <div className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary/40 px-3 py-1 text-xs font-mono text-muted-foreground">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-cyber-cyan animate-pulse-glow" />
-                {tools.length} outils CLI · {categories.length} catégories
+                {totalTools} outils CLI · {totalCategories} catégories
               </div>
 
               <h1 className="mt-5 font-display text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
@@ -162,10 +188,11 @@ function Home() {
       <section className="border-b border-border">
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-            <Kpi icon={TerminalSquare} label="Outils CLI" value={tools.length} accent="text-primary" />
-            <Kpi icon={Layers} label="Catégories" value={categories.length} accent="text-cyber-cyan" />
-            <Kpi icon={GraduationCap} label="Débutant" value={tools.filter(t => t.level === "Débutant").length} accent="text-cyber-emerald" />
-            <Kpi icon={Flame} label="Avancé" value={tools.filter(t => t.level === "Avancé").length} accent="text-accent" />
+            <Kpi icon={TerminalSquare} label="Outils CLI" value={totalTools} accent="text-primary" />
+            <Kpi icon={Layers} label="Catégories" value={totalCategories} accent="text-cyber-cyan" />
+            <Kpi icon={GraduationCap} label="Débutant" value={totalBeginner} accent="text-cyber-emerald" />
+            <Kpi icon={Flame} label="Avancé" value={totalAdvanced} accent="text-accent" />
+
           </div>
         </div>
       </section>
