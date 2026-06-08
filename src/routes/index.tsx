@@ -188,10 +188,11 @@ function Home() {
       <section className="border-b border-border">
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-            <Kpi icon={TerminalSquare} label="Outils CLI" value={tools.length} accent="text-primary" />
-            <Kpi icon={Layers} label="Catégories" value={categories.length} accent="text-cyber-cyan" />
-            <Kpi icon={GraduationCap} label="Débutant" value={tools.filter(t => t.level === "Débutant").length} accent="text-cyber-emerald" />
-            <Kpi icon={Flame} label="Avancé" value={tools.filter(t => t.level === "Avancé").length} accent="text-accent" />
+            <Kpi icon={TerminalSquare} label="Outils CLI" value={totalTools} accent="text-primary" />
+            <Kpi icon={Layers} label="Catégories" value={totalCategories} accent="text-cyber-cyan" />
+            <Kpi icon={GraduationCap} label="Débutant" value={totalBeginner} accent="text-cyber-emerald" />
+            <Kpi icon={Flame} label="Avancé" value={totalAdvanced} accent="text-accent" />
+
           </div>
         </div>
       </section>
