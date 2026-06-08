@@ -87,7 +87,7 @@ function Home() {
   const totalBeginner = tools.filter(t => t.level === "Débutant").length + discStats.beginner;
   const totalAdvanced = tools.filter(t => t.level === "Avancé").length + discStats.advanced;
 
-  const recent = useMemo(() => tools.filter((t) => t.recent).slice(0, 6), []);
+  
   const beginners = useMemo(
     () => tools.filter((t) => t.level === "Débutant").slice(0, 10),
     []
