@@ -62,6 +62,31 @@ function Home() {
 
   const [copiedCmd, setCopiedCmd] = useState(false);
 
+  const [discStats, setDiscStats] = useState({ total: 0, beginner: 0, advanced: 0, categories: 0 });
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase
+        .from("discovered_tools")
+        .select("level, suggested_category")
+        .eq("status", "approved");
+      const rows = data ?? [];
+      const cats = new Set<string>();
+      let beginner = 0, advanced = 0;
+      for (const r of rows as any[]) {
+        if (r.suggested_category) cats.add(r.suggested_category);
+        if (r.level === "Débutant") beginner++;
+        else if (r.level === "Avancé") advanced++;
+      }
+      setDiscStats({ total: rows.length, beginner, advanced, categories: cats.size });
+    })();
+  }, []);
+
+  const totalTools = tools.length + discStats.total;
+  const totalCategories = categories.length + discStats.categories;
+  const totalBeginner = tools.filter(t => t.level === "Débutant").length + discStats.beginner;
+  const totalAdvanced = tools.filter(t => t.level === "Avancé").length + discStats.advanced;
+
   const recent = useMemo(() => tools.filter((t) => t.recent).slice(0, 6), []);
   const beginners = useMemo(
     () => tools.filter((t) => t.level === "Débutant").slice(0, 10),
